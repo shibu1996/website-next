@@ -8,13 +8,16 @@ import Header from "@/themes/multicolor/components/Header";
 import Footer from "@/themes/multicolor/components/Footer";
 import PageBreadcrumb from "@/themes/multicolor/components/PageBreadcrumb";
 import SEOHead from "@/themes/multicolor/components/SEOHead";
+import RelatedBlogs from "@/components/blog/RelatedBlogs";
+import Comments from "@/components/blog/Comments";
+import AuthorComponent from "@/components/blog/AuthorComponent";
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
 import { BookOpen } from 'lucide-react';
 import Loader from '@/themes/multicolor/components/Loader';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://apis.smartlybuild.dev";
-const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID;
-const API_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN;
+const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID || "";
+const API_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN || "";
 
 const BlogPage: React.FC = () => {
   const params = useParams();
@@ -97,7 +100,7 @@ const BlogPage: React.FC = () => {
     };
 
     fetchBlog();
-  }, [slug, navigate]);
+  }, [slug, router]);
 
   if (loading) {
     return <Loader message="Loading Blog..." />;

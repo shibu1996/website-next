@@ -182,3 +182,9 @@ apps/website-nextjs/
 - [Next.js Migration Guide](https://nextjs.org/docs/app/building-your-application/upgrading/app-router-migration)
 - Migration guide in: `apps/website/src/themes/modern/NEXTJS_MIGRATION_GUIDE.md`
 
+
+
+
+
+
+

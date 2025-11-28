@@ -7,11 +7,17 @@ import { getProjectId } from '../../../hooks/getProjectId';
 import { generateFAQSchema } from "../../../hooks/schemaMarkup";
 import { useTheme } from '../contexts/ThemeContext';
 
+interface FAQItem {
+  question?: string;
+  answer?: string;
+  [key: string]: unknown;
+}
+
 const FAQSection = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [faqs, setFaqs] = useState([]);
+  const [faqs, setFaqs] = useState<FAQItem[]>([]);
 
   const projectId = getProjectId();
 

@@ -7,6 +7,23 @@ import Link from 'next/link';
 import { useTheme } from '../contexts/ThemeContext';
 import Loader from './Loader';
 
+interface FooterData {
+  projectName?: string;
+  projectSlogan?: string;
+  welcomeLine?: string;
+  aboutUs?: {
+    phone?: string;
+    email?: string;
+    mainLocation?: string;
+    [key: string]: unknown;
+  };
+  services?: Array<{
+    service_name?: string;
+    [key: string]: unknown;
+  }>;
+  [key: string]: unknown;
+}
+
 const Footer = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
@@ -20,6 +37,7 @@ const Footer = () => {
   ];
 
   const { footerData, isLoading } = useFooterData();
+  const typedFooterData = footerData as FooterData | null;
   // Footer should not show full page loading, just show skeleton
   if (isLoading) {
     return (
@@ -37,11 +55,11 @@ const Footer = () => {
   }
 
 
-  const projectName = footerData?.projectName || "SparkleClean Pro";
-  const projectSlogan = footerData?.projectSlogan || "Professional Cleaning";
-  const welcomeLine = footerData?.welcomeLine || "Professional residential and commercial cleaning services with eco-friendly products and satisfaction guaranteed.";
-  const aboutUs = footerData?.aboutUs || {};
-  const services = footerData?.services || [];
+  const projectName = typedFooterData?.projectName || "SparkleClean Pro";
+  const projectSlogan = typedFooterData?.projectSlogan || "Professional Cleaning";
+  const welcomeLine = typedFooterData?.welcomeLine || "Professional residential and commercial cleaning services with eco-friendly products and satisfaction guaranteed.";
+  const aboutUs = typedFooterData?.aboutUs || {};
+  const services = typedFooterData?.services || [];
 
 
   return (

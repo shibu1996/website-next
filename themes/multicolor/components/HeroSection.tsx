@@ -14,7 +14,6 @@ const HeroSection = () => {
         alt="Emergency Plumbing Service"
         className="absolute inset-0 w-full h-full object-cover"
         loading="eager"
-        fetchpriority="high"
         decoding="async"
         width="2070"
         height="1380"

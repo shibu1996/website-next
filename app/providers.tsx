@@ -13,7 +13,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     defaultOptions: {
       queries: {
         staleTime: 5 * 60 * 1000, // 5 minutes - reduce API calls
-        cacheTime: 10 * 60 * 1000, // 10 minutes cache
+        gcTime: 10 * 60 * 1000, // 10 minutes cache
         refetchOnWindowFocus: false,
         refetchOnMount: false, // Don't refetch on mount if data exists
         refetchOnReconnect: true,

@@ -10,7 +10,8 @@ import { getProjectId } from '../../../hooks/getProjectId';
 import { generateFAQSchema, generateReviewSchema, generateServicesSchema } from "../../../hooks/schemaMarkup"
 import Loader from '../components/Loader';
 import { useTheme } from '../contexts/ThemeContext';
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+// @ts-ignore - react-helmet-async may not be installed
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import DynamicFAIcon from '../../../extras/DynamicFAIcon';
 import SchemaMarkup from '../components/SchemaMarkup';
@@ -39,10 +40,60 @@ import humanizeString from "../../../extras/stringUtils.js";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface Testimonial {
-  review_text: string;
-  customer_image: string;
-  customer_name: string;
-  rating: number | string;
+  review_text?: string;
+  customer_image?: string;
+  customer_name?: string;
+  rating?: number | string;
+  [key: string]: unknown;
+}
+
+interface Guarantee {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  bgColor?: string;
+  [key: string]: unknown;
+}
+
+interface ProcessStep {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  bgColor?: string;
+  borderColor?: string;
+  [key: string]: unknown;
+}
+
+interface ProjectService {
+  _id?: string;
+  service_name?: string;
+  service_description?: string;
+  images?: Array<{ url?: string }>;
+  fas_fa_icon?: string;
+  [key: string]: unknown;
+}
+
+interface StatItem {
+  iconName?: string;
+  value?: string;
+  label?: string;
+  [key: string]: unknown;
+}
+
+interface FAQItem {
+  question?: string;
+  answer?: string;
+  [key: string]: unknown;
+}
+
+interface ProjectLocation {
+  _id?: string;
+  name?: string;
+  slug?: string;
+  location_id?: string;
+  [key: string]: unknown;
 }
 const colorSets = [
   {
@@ -134,7 +185,21 @@ const AreaDetail = () => {
   const { countryName } = params as { countryName?: string };
   const displayCountryName = humanizeString(countryName) || 'United States';
   const [isAreaLoading, setIsAreaLoading] = useState(false);
-  let { id, UpcomingPage, nextPage, locationName, sortname, _id } = location.state || {};
+  // Note: Next.js doesn't support route state, use localStorage instead
+  const getLocationState = () => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('areaNavigationState');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch {
+          return {};
+        }
+      }
+    }
+    return {};
+  };
+  let { id, UpcomingPage, nextPage, locationName, sortname, _id } = getLocationState();
 
   const [refId, setRefId] = useState(() => {
     if (id) return id; // coming from internal navigation
@@ -148,12 +213,18 @@ const AreaDetail = () => {
 
   const slug = pathname.startsWith('/') ? pathname.slice(1) : pathname;
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [projectWhyChooseUs, setProjectWhyChooseUs] = useState([]);
+  interface WhyChooseUsFeature {
+    title?: string;
+    description?: string;
+    iconClass?: string;
+    [key: string]: unknown;
+  }
+  const [projectWhyChooseUs, setProjectWhyChooseUs] = useState<WhyChooseUsFeature[]>([]);
   const [projectName, setProjectName] = useState("");
-  const [processSteps, setProcessSteps] = useState([]);
+  const [processSteps, setProcessSteps] = useState<ProcessStep[]>([]);
   // Add these inside your component to lift those values into state:
 
-  const [guarantees, setGuarantees] = useState([]);
+  const [guarantees, setGuarantees] = useState<Guarantee[]>([]);
   const [guaranteeText, setGuaranteeText] = useState("");
   const [guaranteeText2, setGuaranteeText2] = useState("");
   const [promiseLine, setPromiseLine] = useState("");
@@ -161,11 +232,11 @@ const AreaDetail = () => {
 
   const [projectCategory, setProjectCategory] = useState("");
   const [pageType, setPageType] = useState('');
-  const [projectLocations, setProjectLocations] = useState([]);
-  const [projectServices, setprojectServices] = useState([]);
+  const [projectLocations, setProjectLocations] = useState<ProjectLocation[]>([]);
+  const [projectServices, setprojectServices] = useState<ProjectService[]>([]);
   const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [projectFaqs, setprojectFaqs] = useState([]);
+  const [projectFaqs, setprojectFaqs] = useState<FAQItem[]>([]);
   const [welcomeLine, setWelcomeLine] = useState("");
   const [showName, setShowName] = useState("");
   const [countryDescription, setCountryDescription] = useState("");
@@ -173,13 +244,13 @@ const AreaDetail = () => {
   const [cityDescription, setCityDescription] = useState("");
   const [localAreaDescription, setLocalAreaDescription] = useState("");
   const [projectDescription, setProjectDescription] = useState('');
-  const [stats, setStats] = useState([]);
+  const [stats, setStats] = useState<StatItem[]>([]);
   const [pageLocation, setPageLocation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isHeroLoading, setIsHeroLoading] = useState(true);
 
   const [locInfo, setLocInfo] = useState<{ name: string; lat: number; lng: number } | null>(null);
-  const [CTA, setCTA] = useState([]);
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
   const { seoData } = useSEO(pathname);
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
@@ -187,7 +258,7 @@ const AreaDetail = () => {
   const [hero2Image, setHero2Image] = useState("");
   const [hero3Image, setHero3Image] = useState("");
   const [hero4Image, setHero4Image] = useState("");
-  const areaSectionRef = useRef(null);
+  const areaSectionRef = useRef<HTMLDivElement>(null);
 
   const ctaSlotMap = {
     country: {
@@ -220,7 +291,7 @@ const AreaDetail = () => {
     }
   };
 
-  const coloredGuarantees = (guarantees || []).map((g, i) => ({
+  const coloredGuarantees = (guarantees || []).map((g: Guarantee, i: number) => ({
     ...g,
     color: g.color || colorSets[i % colorSets.length].color,
     bgColor: g.bgColor || colorSets[i % colorSets.length].bgColor
@@ -243,8 +314,13 @@ const AreaDetail = () => {
   };
 
 
-  const renderCTA = (CTA, pageType, slot, phoneNumber, projectCategory) => {
-    const slotMap = ctaSlotMap[pageType] || {};
+  interface CTAItem {
+    title?: string;
+    description?: string;
+    [key: string]: unknown;
+  }
+  const renderCTA = (CTA: CTAItem[], pageType: string, slot: string, phoneNumber: string, projectCategory: string) => {
+    const slotMap = (ctaSlotMap as Record<string, Record<string, number>>)[pageType] || {};
     const index = slotMap[slot];
 
     if (CTA.length === 0) return null;
@@ -340,18 +416,18 @@ const AreaDetail = () => {
   // Extract values from location state or URL
 
   // Get city name from URL for city/local area pages
-  let cityName = pathname.split('/').pop();
+  let cityName = pathname.split('/').pop() || '';
   console.log(cityName, showName,"initial city name cityNamecityNamecityNamecityName2222")
   cityName = showName ? showName : cityName
 
   console.log(cityName, "initial city name cityNamecityNamecityNamecityName")
   // Convert the first letter of each word to uppercase and the rest to lowercase
-  cityName = cityName.split(' ').map(word => {
+  cityName = (cityName || '').split(' ').map((word: string) => {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
   }).join(' ');
 
-  function formatLocation(input) {
-    const [first, second] = input.split(",").map(s => s.trim());
+  function formatLocation(input: string) {
+    const [first, second] = input.split(",").map((s: string) => s.trim());
     if (!second) return input;
     return second.length <= 3
       ? `${first}, ${second.toUpperCase()}`
@@ -363,7 +439,7 @@ const AreaDetail = () => {
 
   cityName = formatLocation(cityName)
 
-  const getTruncatedDescription = (text) => {
+  const getTruncatedDescription = (text: string | undefined) => {
     if (!text) return '';
     const idx = text.indexOf('.');
     return idx !== -1 ? text.substring(0, idx + 1) : text;
@@ -416,10 +492,21 @@ const AreaDetail = () => {
   };
 
   useEffect(() => {
-    if (location.state?.scrollToAreaSection && areaSectionRef.current) {
-      areaSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    // Check localStorage for scroll flag (Next.js doesn't support route state)
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('areaNavigationState');
+      if (saved) {
+        try {
+          const state = JSON.parse(saved);
+          if (state.scrollToAreaSection && areaSectionRef.current) {
+            areaSectionRef.current.scrollIntoView({ behavior: "smooth" });
+          }
+        } catch {
+          // Ignore parse errors
+        }
+      }
     }
-  }, [location.state]); // Runs only when location.state changes
+  }, [pathname]); // Runs when pathname changes
 
 
 
@@ -615,12 +702,23 @@ const AreaDetail = () => {
 
 
   useEffect(() => {
-    if (location.state?.scrollToAreaSection && areaSectionRef.current) {
-      areaSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    // Check localStorage for scroll flag (Next.js doesn't support route state)
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('areaNavigationState');
+      if (saved) {
+        try {
+          const state = JSON.parse(saved);
+          if (state.scrollToAreaSection && areaSectionRef.current) {
+            areaSectionRef.current.scrollIntoView({ behavior: "smooth" });
+          }
+        } catch {
+          // Ignore parse errors
+        }
+      }
     }
-  }, [location.state]);
+  }, [pathname]);
 
-  const handleLocationClick = (locationSlug) => {
+  const handleLocationClick = (locationSlug: string) => {
     return `/${locationSlug}`;
   };
 
@@ -630,18 +728,19 @@ const AreaDetail = () => {
     // Build the new route using the current pathname
     const newRoute = `${pathname}/services/${serviceName}`;
 
-    router.push(newRoute);
-    // Note: Next.js doesn't support route state, use query params if needed
-      state: {
+    // Store service data in localStorage (Next.js doesn't support route state)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('serviceNavigationState', JSON.stringify({
         serviceId: service._id,
         serviceName: service.service_name,
         serviceDescription: service.service_description,
         locationName: cityName, // or your preferred location identifier
-        serviceImage: service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
-        serviceImage1: service.images[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
-        serviceImage2: service.images[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"
-      }
-    });
+        serviceImage: service.images?.[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
+        serviceImage1: service.images?.[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
+        serviceImage2: service.images?.[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"
+      }));
+    }
+    router.push(newRoute);
   };
 
 
@@ -677,7 +776,7 @@ const AreaDetail = () => {
   const firstPart = descriptionParts.slice(0, 2).join(' ');
   const secondPart = descriptionParts.slice(2).join(' ');
 
-  const coloredSteps = processSteps.map((step, i) => ({
+  const coloredSteps = processSteps.map((step: ProcessStep, i: number) => ({
     ...step,
     color: step.color || colorSets[i % colorSets.length].color,
     bgColor: step.bgColor || colorSets[i % colorSets.length].bgColor,
@@ -709,11 +808,11 @@ const AreaDetail = () => {
     { label: areaName }
   ];
   // Build breadcrumb data for schema from the same segments used by the UI
-  const schemaBreadcrumbs = segments.map((segment, index) => {
+  const schemaBreadcrumbs = segments.map((segment: string, index: number) => {
     const url = '/' + segments.slice(0, index + 1).join('/');
     const name = segment
       .split('-')
-      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ');
     return { name, url };
   });
@@ -1020,11 +1119,11 @@ const AreaDetail = () => {
 
                   {/* Stats Grid */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                    {stats.map((stat, index) => (
+                    {stats.map((stat: StatItem, index: number) => (
                       <div key={index} className="text-center group">
                         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 transition-all duration-300 group-hover:scale-110" style={{ backgroundColor: `${colors.primaryButton.bg}15`, border: `2px solid ${colors.primaryButton.bg}30` }}>
                           <div style={{ color: colors.primaryButton.bg }}>
-                            <DynamicFAIcon iconClass={stat.iconName} className="text-2xl" />
+                            <DynamicFAIcon iconClass={stat.iconName || ''} className="text-2xl" />
                           </div>
                         </div>
                         <div className="text-2xl sm:text-3xl font-bold mb-1" style={{ color: colors.primaryButton.bg }}>{stat.value}</div>
@@ -1063,22 +1162,27 @@ const AreaDetail = () => {
 
               {/* Services Grid */}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {projectServices.map((service, index) => {
-                  const serviceName = service.service_name.toLowerCase().replace(/\s+/g, '-');
+                {projectServices.map((service: ProjectService, index: number) => {
+                  const serviceName = (service.service_name || '').toLowerCase().replace(/\s+/g, '-');
                   const servicePath = `${pathname}/services/${serviceName}`;
                   return (
                     <Link
                       key={index}
-                      to={servicePath}
+                      href={servicePath}
                       rel="noopener noreferrer"
-                      state={{
-                        serviceId: service._id,
-                        serviceName: service.service_name,
-                        serviceDescription: service.service_description,
-                        locationName: cityName,
-                        serviceImage: service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
-                        serviceImage1: service.images[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
-                        serviceImage2: service.images[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"
+                      onClick={() => {
+                        // Store service data in localStorage (Next.js doesn't support route state)
+                        if (typeof window !== 'undefined') {
+                          localStorage.setItem('serviceNavigationState', JSON.stringify({
+                            serviceId: service._id,
+                            serviceName: service.service_name,
+                            serviceDescription: service.service_description,
+                            locationName: cityName,
+                            serviceImage: service.images?.[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
+                            serviceImage1: service.images?.[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
+                            serviceImage2: service.images?.[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"
+                          }));
+                        }
                       }}
                       className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
                       style={{
@@ -1088,8 +1192,8 @@ const AreaDetail = () => {
                       {/* Image Container */}
                       <div className="relative h-48 overflow-hidden">
                         <img
-                          src={service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
-                          alt={service.service_name}
+                          src={service.images?.[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
+                          alt={service.service_name || 'Service'}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           loading="lazy"
                           decoding="async"
@@ -1187,7 +1291,7 @@ const AreaDetail = () => {
 
               {/* Features Grid */}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {projectWhyChooseUs.map((feature, index) => (
+                {projectWhyChooseUs.map((feature: WhyChooseUsFeature, index: number) => (
                   <div 
                     key={index} 
                     className="group relative bg-white rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl"
@@ -1287,7 +1391,7 @@ const AreaDetail = () => {
 
                 {/* Process Steps */}
                 <div className="space-y-12 lg:space-y-16">
-                  {coloredSteps.map((step, index) => (
+                  {coloredSteps.map((step: ProcessStep & { number?: string }, index: number) => (
                     <div 
                       key={index} 
                       className={`flex items-center ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} flex-col gap-8 lg:gap-12`}
@@ -1400,18 +1504,23 @@ const AreaDetail = () => {
 
               {/* Areas Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                {projectLocations.map((area, index) => (
+                {projectLocations.map((area: ProjectLocation, index: number) => (
                   <Link
                     key={index}
-                    to={handleLocationClick(area.slug)}
-                    state={{
-                      id: area.location_id,
-                      projectId,
-                      UpcomingPage,
-                      nextPage: getNextPage(),
-                      locationName: area.name,
-                      sortname: sortname,
-                      _id: area._id,
+                    href={handleLocationClick(area.slug || '')}
+                    onClick={() => {
+                      // Store location data in localStorage (Next.js doesn't support route state)
+                      if (typeof window !== 'undefined') {
+                        localStorage.setItem('areaNavigationState', JSON.stringify({
+                          id: area.location_id,
+                          projectId,
+                          UpcomingPage,
+                          nextPage: getNextPage(),
+                          locationName: area.name,
+                          sortname: sortname,
+                          _id: area._id,
+                        }));
+                      }
                     }}
                     className="group relative bg-white rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl"
                     style={{
@@ -1889,7 +1998,7 @@ const AreaDetail = () => {
               {/* FAQ Accordion */}
               <div className="max-w-4xl mx-auto">
                 <div className="space-y-4">
-                  {projectFaqs.map((faq, index) => (
+                  {projectFaqs.map((faq: FAQItem, index: number) => (
                     <div 
                       key={index} 
                       className="group bg-white rounded-3xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl"
@@ -1924,7 +2033,7 @@ const AreaDetail = () => {
                             <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                           </div>
                           <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 pr-4 leading-tight">
-                            {faq.question}
+                            {faq.question || ''}
                           </h3>
                         </div>
                         <div 

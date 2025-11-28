@@ -6,6 +6,21 @@ import { httpFile } from "@/config";
 import DynamicFAIcon from '../../../../extras/DynamicFAIcon';
 import { getProjectId } from '../../../../hooks/getProjectId';
 
+interface ProcessStep {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  bgColor?: string;
+  borderColor?: string;
+  number?: string | number;
+  [key: string]: unknown;
+}
+
+interface ServicesProcessProps {
+  formattedLocationName?: string;
+}
+
 // Define static color mapping for each step
 const colorSets = [
   'bg-blue-500',
@@ -16,8 +31,8 @@ const colorSets = [
   'bg-pink-500'
 ];
 
-const ServicesProcess = ({ formattedLocationName = "" }) => {
-  const [processSteps, setProcessSteps] = useState([]);
+const ServicesProcess = ({ formattedLocationName = "" }: ServicesProcessProps) => {
+  const [processSteps, setProcessSteps] = useState<ProcessStep[]>([]);
   const [projectCategory, setProjectCategory] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,7 +68,7 @@ const ServicesProcess = ({ formattedLocationName = "" }) => {
   }
 
   // Assign colors to each process step, cycling through the colors if there are more steps than colors
-  const coloredSteps = processSteps.map((step, index) => {
+  const coloredSteps = processSteps.map((step: ProcessStep, index: number) => {
     const colorIndex = index % colorSets.length; // Cycle through colors if steps exceed available colors
     return {
       ...step,

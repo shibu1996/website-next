@@ -11,6 +11,13 @@ const AboutSection = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
 
+interface StatItem {
+  serialno?: number | string;
+  iconName?: string;
+  value?: string;
+  label?: string;
+}
+
 const sanitize = (raw: any): string =>
   typeof raw === 'string'
     ? raw.trim().replace(/^[,\s"]+|[,\s"]+$/g, '')
@@ -19,7 +26,7 @@ const sanitize = (raw: any): string =>
    const [aboutImage, setAboutImage] = useState('');
   const [projectCategory, setProjectCategory] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
-  const [stats, setStats] = useState([]);
+  const [stats, setStats] = useState<StatItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Read projectId from query or localStorage

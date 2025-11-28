@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from 'next/link';
+// @ts-ignore - react-helmet-async may not be installed
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Calendar, Clock, ArrowRight, BookOpen, Search, Filter } from 'lucide-react';
 
@@ -11,7 +12,7 @@ import SEOHead from "../components/SEOHead";
 import { httpFile } from "@/config";
 import { getProjectId } from '../../../hooks/getProjectId';
 import { useTheme } from '../contexts/ThemeContext';
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 import Loader from '../components/Loader';
 
@@ -39,6 +40,15 @@ const Blogs = () => {
   };
   
   const safeColors = getThemeColors() || fallbackColors;
+  
+  // Get origin safely (works in both SSR and client)
+  const getOrigin = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.origin;
+    }
+    // Fallback for SSR - use environment variable or default
+    return process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+  };
   
   const projectId = getProjectId();
 
@@ -79,7 +89,7 @@ const Blogs = () => {
 
         // Fetch blog data with featured images using the same API as RelatedBlogs
         const formData = new FormData();
-        formData.append("projectId", projectId);
+        formData.append("projectId", projectId || '');
         formData.append("limit", "50"); // Get more blogs
 
         const { data } = await httpFile.post("/admin/v1/related_blogs", formData, {
@@ -146,7 +156,7 @@ const Blogs = () => {
         <SEOHead
           title="Blogs | Project Articles"
           description="Browse the latest blog posts."
-          canonical={`${window.location.origin}/blogs`}
+          canonical={`${getOrigin()}/blogs`}
         />
         <Header />
 
@@ -296,7 +306,7 @@ const Blogs = () => {
                 {filteredBlogs.map((blog, index) => (
                   <Link
                     key={blog.slug}
-                    to={blog.url || `/blog/${blog.slug}`}
+                    href={blog.url || `/blog/${blog.slug}`}
                     className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
                     style={{
                       border: `1px solid ${safeColors.primaryButton.bg}15`

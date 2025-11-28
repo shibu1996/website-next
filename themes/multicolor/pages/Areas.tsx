@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "@/config";
 import { MapPin, Clock, Award, Phone, Star, Sparkles, Eye, Home, Wrench, Calendar } from 'lucide-react';
@@ -12,10 +14,10 @@ import FAQSection from '../components/FAQSection';
 import PageSchemaMarkup from '../components/PageSchemaMarkup';
 import SEOHead from '../components/SEOHead';
 import { Button } from '@/components/ui/button';
+// @ts-ignore - react-helmet-async may not be installed
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useSEO } from '../../../hooks/useSEO';
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
-'use client';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
@@ -29,7 +31,27 @@ const Areas = () => {
   const breadcrumbItems = [
     { label: "Areas" }
   ];
-  const [whyChooseUsAboutPage, setWhyChooseUsAboutPage] = useState([]);
+  interface WhyChooseUsFeature {
+    title?: string;
+    description?: string;
+    iconClass?: string;
+    [key: string]: unknown;
+  }
+  interface AreaLocation {
+    _id?: string;
+    name?: string;
+    slug?: string;
+    location_id?: string;
+    sortname?: string;
+    description?: string;
+    [key: string]: unknown;
+  }
+  interface CTAItem {
+    title?: string;
+    description?: string;
+    [key: string]: unknown;
+  }
+  const [whyChooseUsAboutPage, setWhyChooseUsAboutPage] = useState<WhyChooseUsFeature[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const { seoData } = useSEO('/areas');
@@ -44,8 +66,8 @@ const Areas = () => {
   const [welcomeLine, setWelcomeLine] = useState("");
 
   const [UpcomingPage, setUpcomingPage] = useState("");
-  const [locations, setLocations] = useState([]);
-  const [CTA, setCTA] = useState([]);
+  const [locations, setLocations] = useState<AreaLocation[]>([]);
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -119,8 +141,8 @@ const Areas = () => {
 
   console.log(locations, "locations");
 
-  const handleLocationClick = (area, isButtonClick) => {
-    const slugPath = `/${area.slug}`;
+  const handleLocationClick = (area: AreaLocation, isButtonClick?: boolean) => {
+    const slugPath = `/${area.slug || ''}`;
 
     // If navigating to this page, pass the scroll flag
     if (pathname === slugPath) {
@@ -133,9 +155,10 @@ const Areas = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } else {
-      router.push(slugPath);
-      // Note: Next.js doesn't support route state, use query params if needed
-        state: {
+      // Store state in localStorage for Next.js (since it doesn't support route state)
+      if (typeof window !== 'undefined') {
+        const projectId = getProjectId();
+        localStorage.setItem('areaNavigationState', JSON.stringify({
           id: area.location_id,
           projectId,
           UpcomingPage,
@@ -144,8 +167,9 @@ const Areas = () => {
           sortname: area.sortname,
           _id: area._id,
           scrollToAreaSection: isButtonClick, // Only set to true when button clicked
-        }
-      });
+        }));
+      }
+      router.push(slugPath);
     }
   };
   const getNextPage = () => {
@@ -156,7 +180,7 @@ const Areas = () => {
     return '';
   };
 
-  const getCTAContent = (index) => {
+  const getCTAContent = (index: number): CTAItem => {
     if (CTA.length === 0) {
       return { title: "Ready to Get Started?", description: "Contact us for professional services in your area" };
     }
@@ -720,7 +744,7 @@ const Areas = () => {
 
               {/* Book Online Button */}
               <Link
-                to="/contact"
+                href="/contact"
                 className="group relative inline-flex items-center gap-3 px-6 py-4 rounded-xl font-semibold text-base transition-all duration-300 hover:-translate-y-1 shadow-lg backdrop-blur-md"
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.95)',

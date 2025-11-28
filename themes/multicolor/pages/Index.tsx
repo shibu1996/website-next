@@ -5,6 +5,7 @@ import React, { useEffect, useState, useLayoutEffect, lazy, Suspense } from 'rea
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Calendar } from 'lucide-react';
+// @ts-ignore - react-helmet-async may not be installed
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import { Phone, Clock, Star, Shield, Award, CheckCircle, Zap, Users, Wrench } from 'lucide-react';
@@ -50,8 +51,13 @@ const Index = () => {
   const { seoData } = useSEO('/home');
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
+  interface CTAItem {
+    title?: string;
+    description?: string;
+    [key: string]: unknown;
+  }
   const [projectCategory, setProjectCategory] = useState("");
-  const [CTA, setCTA] = useState([]);
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
   const projectId = getProjectId();
   const pathname = usePathname();
   const router = useRouter();
@@ -133,7 +139,7 @@ const Index = () => {
         // clean features
 
         // No more hardcoded classArray - we'll use theme colors dynamically
-        const modifiedFeatures = (info.featuresSection || []).map((f, index) => ({
+        const modifiedFeatures = (info.featuresSection || []).map((f: any, index: number) => ({
           serialno: f.serialno,
           iconName: strip(f.iconName),
           title: strip(f.title),
@@ -151,7 +157,7 @@ const Index = () => {
   }, [projectId]);
   // Example API fetch and modification
 
-  const getCTAContent = (index) => {
+  const getCTAContent = (index: number): CTAItem => {
     if (CTA.length === 0) {
       return { title: "What are you waiting for?", description: "Contact us for our services" };
     }
@@ -477,7 +483,7 @@ const Index = () => {
 
               {/* Book Online Button */}
               <Link
-                to="/contact"
+                href="/contact"
                 className="group relative inline-flex items-center gap-3 px-6 py-4 rounded-xl font-semibold text-base transition-all duration-300 hover:-translate-y-1 shadow-lg backdrop-blur-md"
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -585,7 +591,7 @@ const Index = () => {
 
               {/* Book Online Button */}
               <Link
-                to="/contact"
+                href="/contact"
                 className="group relative inline-flex items-center gap-3 px-6 py-4 rounded-xl font-semibold text-base transition-all duration-300 hover:-translate-y-1 shadow-lg backdrop-blur-md"
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -698,7 +704,7 @@ const Index = () => {
 
               {/* Book Online Button */}
               <Link
-                to="/contact"
+                href="/contact"
                 className="group relative inline-flex items-center gap-3 px-6 py-4 rounded-xl font-semibold text-base transition-all duration-300 hover:-translate-y-1 shadow-lg backdrop-blur-md"
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.95)',

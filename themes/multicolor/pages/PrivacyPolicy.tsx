@@ -33,10 +33,19 @@ const PrivacyPolicy = () => {
 
   const safeColors = colors || fallbackColors;
 
+  // Get origin safely (works in both SSR and client)
+  const getOrigin = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.origin;
+    }
+    // Fallback for SSR - use environment variable or default
+    return process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+  };
+
   const pageSchema = generateWebPageSchema({
     name: 'Privacy Policy - US Plumbers',
     description: 'Privacy Policy for US Plumbers - Learn how we collect, use, and protect your personal information.',
-    url: `${window.location.origin}/privacy-policy`
+    url: `${getOrigin()}/privacy-policy`
   });
 
   useSchemaMarkup(pageSchema, 'privacy-policy-page');
@@ -44,7 +53,7 @@ const PrivacyPolicy = () => {
   // ---- Dynamic content logic start ----
   const [privacyContent, setPrivacyContent] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const projectId = getProjectId();
 
   useEffect(() => {
@@ -79,7 +88,7 @@ const PrivacyPolicy = () => {
       <SEOHead
         title="Privacy Policy - US Plumbers | Data Protection & Privacy"
         description="Privacy Policy for US Plumbers. Learn how we collect, use, and protect your personal information. We are committed to protecting your privacy."
-        canonical={`${window.location.origin}/privacy-policy`}
+        canonical={`${getOrigin()}/privacy-policy`}
       />
 
       <Header />

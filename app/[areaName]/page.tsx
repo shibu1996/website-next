@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useParams } from 'next/navigation';
@@ -34,7 +34,7 @@ import FAQSection from '@/themes/multicolor/components/FAQSection';
 import MapSection from '@/themes/multicolor/components/MapSection';
 import PageSchemaMarkup from '@/themes/multicolor/components/PageSchemaMarkup';
 import AreaSchemaMarkup from '@/themes/multicolor/components/AreaSchemaMarkup';
-import humanizeString from "../../extras/stringUtils";
+import humanizeString from "@/extras/stringUtils";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface Testimonial {
@@ -43,6 +43,80 @@ interface Testimonial {
   customer_name: string;
   rating: number | string;
 }
+
+interface Guarantee {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  bgColor?: string;
+  [key: string]: unknown;
+}
+
+type PageType = 'country' | 'state' | 'city' | 'local_area';
+type CTASlot = 'slot1' | 'slot2' | 'slot3' | 'slot4' | 'slot5';
+
+interface CTAItem {
+  title?: string;
+  description?: string;
+  primaryButtonText?: string;
+  primaryButtonLink?: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
+  [key: string]: unknown;
+}
+
+interface ProcessStep {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  bgColor?: string;
+  borderColor?: string;
+  [key: string]: unknown;
+}
+
+interface StatItem {
+  serialno?: number | string;
+  iconName?: string;
+  value?: string;
+  label?: string;
+}
+
+interface ProjectService {
+  service_name?: string;
+  short_description?: string;
+  description?: string;
+  service_description?: string;
+  iconClass?: string;
+  image?: string;
+  fas_fa_icon?: string;
+  images?: Array<{ url?: string }>;
+  _id?: string;
+  [key: string]: unknown;
+}
+
+interface WhyChooseUsFeature {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  [key: string]: unknown;
+}
+
+interface ProjectLocation {
+  name?: string;
+  slug?: string;
+  location_id?: string;
+  _id?: string;
+  [key: string]: unknown;
+}
+
+interface FAQItem {
+  question?: string;
+  answer?: string;
+  [key: string]: unknown;
+}
+
 const colorSets = [
   {
     color: 'from-blue-500 to-cyan-500',
@@ -172,24 +246,24 @@ const AreaDetail = () => {
 
   const slug = pathname.startsWith('/') ? pathname.slice(1) : pathname;
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [projectWhyChooseUs, setProjectWhyChooseUs] = useState([]);
+  const [projectWhyChooseUs, setProjectWhyChooseUs] = useState<WhyChooseUsFeature[]>([]);
   const [projectName, setProjectName] = useState("");
-  const [processSteps, setProcessSteps] = useState([]);
+  const [processSteps, setProcessSteps] = useState<ProcessStep[]>([]);
   // Add these inside your component to lift those values into state:
 
-  const [guarantees, setGuarantees] = useState([]);
+  const [guarantees, setGuarantees] = useState<Guarantee[]>([]);
   const [guaranteeText, setGuaranteeText] = useState("");
   const [guaranteeText2, setGuaranteeText2] = useState("");
   const [promiseLine, setPromiseLine] = useState("");
   const [heroHeading, setHeroHeading] = useState("");
 
   const [projectCategory, setProjectCategory] = useState("");
-  const [pageType, setPageType] = useState('');
-  const [projectLocations, setProjectLocations] = useState([]);
-  const [projectServices, setprojectServices] = useState([]);
+  const [pageType, setPageType] = useState<PageType | ''>('');
+  const [projectLocations, setProjectLocations] = useState<ProjectLocation[]>([]);
+  const [projectServices, setprojectServices] = useState<ProjectService[]>([]);
   const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [projectFaqs, setprojectFaqs] = useState([]);
+  const [projectFaqs, setprojectFaqs] = useState<FAQItem[]>([]);
   const [welcomeLine, setWelcomeLine] = useState("");
   const [showName, setShowName] = useState("");
   const [countryDescription, setCountryDescription] = useState("");
@@ -197,13 +271,13 @@ const AreaDetail = () => {
   const [cityDescription, setCityDescription] = useState("");
   const [localAreaDescription, setLocalAreaDescription] = useState("");
   const [projectDescription, setProjectDescription] = useState('');
-  const [stats, setStats] = useState([]);
+  const [stats, setStats] = useState<StatItem[]>([]);
   const [pageLocation, setPageLocation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isHeroLoading, setIsHeroLoading] = useState(true);
 
   const [locInfo, setLocInfo] = useState<{ name: string; lat: number; lng: number } | null>(null);
-  const [CTA, setCTA] = useState([]);
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
   const { seoData } = useSEO(pathname);
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
@@ -211,7 +285,7 @@ const AreaDetail = () => {
   const [hero2Image, setHero2Image] = useState("");
   const [hero3Image, setHero3Image] = useState("");
   const [hero4Image, setHero4Image] = useState("");
-  const areaSectionRef = useRef(null);
+  const areaSectionRef = useRef<HTMLDivElement | null>(null);
 
   const ctaSlotMap = {
     country: {
@@ -244,7 +318,7 @@ const AreaDetail = () => {
     }
   };
 
-  const coloredGuarantees = (guarantees || []).map((g, i) => ({
+  const coloredGuarantees = (guarantees || []).map((g: Guarantee, i: number) => ({
     ...g,
     color: g.color || colorSets[i % colorSets.length].color,
     bgColor: g.bgColor || colorSets[i % colorSets.length].bgColor
@@ -267,12 +341,17 @@ const AreaDetail = () => {
   };
 
 
-  const renderCTA = (CTA, pageType, slot, phoneNumber, projectCategory) => {
-    const slotMap = ctaSlotMap[pageType] || {};
-    const index = slotMap[slot];
+  const renderCTA = (
+    CTAItems: CTAItem[],
+    currentPageType: PageType | '',
+    slot: CTASlot,
+    phoneNumber: string
+  ): ReactNode => {
+    const slotMap = currentPageType ? ctaSlotMap[currentPageType] : undefined;
+    const index = slotMap ? slotMap[slot] : undefined;
 
-    if (CTA.length === 0) return null;
-    const cta = CTA[index] || CTA[0];
+    if (CTAItems.length === 0) return null;
+    const cta = (typeof index === 'number' ? CTAItems[index] : CTAItems[0]) || CTAItems[0];
 
     return (
       <section className="py-12 relative overflow-hidden">
@@ -364,7 +443,7 @@ const AreaDetail = () => {
   // Extract values from location state or URL
 
   // Get city name from URL for city/local area pages
-  let cityName = pathname.split('/').pop();
+  let cityName: string = pathname.split('/').pop() || '';
   console.log(cityName, showName,"initial city name cityNamecityNamecityNamecityName2222")
   cityName = showName ? showName : cityName
 
@@ -374,7 +453,7 @@ const AreaDetail = () => {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
   }).join(' ');
 
-  function formatLocation(input) {
+  function formatLocation(input: string): string {
     const [first, second] = input.split(",").map(s => s.trim());
     if (!second) return input;
     return second.length <= 3
@@ -387,7 +466,7 @@ const AreaDetail = () => {
 
   cityName = formatLocation(cityName)
 
-  const getTruncatedDescription = (text) => {
+  const getTruncatedDescription = (text: string | undefined): string => {
     if (!text) return '';
     const idx = text.indexOf('.');
     return idx !== -1 ? text.substring(0, idx + 1) : text;
@@ -686,7 +765,7 @@ const AreaDetail = () => {
     }
   }, [navigationState?.scrollToAreaSection]);
 
-  const handleLocationClick = (locationSlug) => {
+  const handleLocationClick = (locationSlug: string): string => {
     return `/${locationSlug}`;
   };
 
@@ -750,7 +829,7 @@ const AreaDetail = () => {
   const firstPart = descriptionParts.slice(0, 2).join(' ');
   const secondPart = descriptionParts.slice(2).join(' ');
 
-  const coloredSteps = processSteps.map((step, i) => ({
+  const coloredSteps = processSteps.map((step: ProcessStep, i: number) => ({
     ...step,
     color: step.color || colorSets[i % colorSets.length].color,
     bgColor: step.bgColor || colorSets[i % colorSets.length].bgColor,
@@ -1091,7 +1170,7 @@ const AreaDetail = () => {
                       <div key={index} className="text-center group">
                         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 transition-all duration-300 group-hover:scale-110" style={{ backgroundColor: `${colors.primaryButton.bg}15`, border: `2px solid ${colors.primaryButton.bg}30` }}>
                           <div style={{ color: colors.primaryButton.bg }}>
-                            <DynamicFAIcon iconClass={stat.iconName} className="text-2xl" />
+                            <DynamicFAIcon iconClass={stat.iconName || ''} className="text-2xl" />
                           </div>
                         </div>
                         <div className="text-2xl sm:text-3xl font-bold mb-1" style={{ color: colors.primaryButton.bg }}>{stat.value}</div>
@@ -1131,11 +1210,15 @@ const AreaDetail = () => {
               {/* Services Grid */}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {projectServices.map((service, index) => {
-                  const serviceName = service.service_name.toLowerCase().replace(/\s+/g, '-');
-                  const servicePath = `${pathname}/services/${serviceName}`;
+                  const serviceTitle = service.service_name || `Service ${index + 1}`;
+                  const serviceSlug = serviceTitle.toLowerCase().replace(/\s+/g, '-');
+                  const servicePath = `${pathname}/services/${serviceSlug}`;
+                  const primaryImage = service.images?.[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg";
+                  const secondaryImage = service.images?.[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg";
+                  const tertiaryImage = service.images?.[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg";
                   return (
                     <Link
-                      key={index}
+                      key={service._id ?? index}
                       href={servicePath}
                       rel="noopener noreferrer"
                       onClick={(e) => {
@@ -1143,24 +1226,24 @@ const AreaDetail = () => {
                         if (typeof window !== 'undefined') {
                           localStorage.setItem('serviceNavigationState', JSON.stringify({
                             serviceId: service._id,
-                            serviceName: service.service_name,
+                            serviceName: serviceTitle,
                             serviceDescription: service.service_description,
                             locationName: cityName,
-                            serviceImage: service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
-                            serviceImage1: service.images[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
-                            serviceImage2: service.images[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"
+                            serviceImage: primaryImage,
+                            serviceImage1: secondaryImage,
+                            serviceImage2: tertiaryImage
                           }));
                         }
                         router.push(servicePath);
                       }}
                       data-state={{
                         serviceId: service._id,
-                        serviceName: service.service_name,
+                        serviceName: serviceTitle,
                         serviceDescription: service.service_description,
                         locationName: cityName,
-                        serviceImage: service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
-                        serviceImage1: service.images[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
-                        serviceImage2: service.images[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"
+                        serviceImage: primaryImage,
+                        serviceImage1: secondaryImage,
+                        serviceImage2: tertiaryImage
                       }}
                       className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
                       style={{
@@ -1170,8 +1253,8 @@ const AreaDetail = () => {
                       {/* Image Container */}
                       <div className="relative h-48 overflow-hidden">
                         <img
-                          src={service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
-                          alt={service.service_name}
+                          src={primaryImage}
+                          alt={serviceTitle}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           loading="lazy"
                           decoding="async"
@@ -1194,7 +1277,7 @@ const AreaDetail = () => {
                           }}
                         >
                           <i 
-                            className={`${service.fas_fa_icon} text-xl`}
+                            className={`${service.fas_fa_icon || ''} text-xl`}
                             style={{ color: colors.primaryButton.bg }}
                           ></i>
                         </div>
@@ -1217,7 +1300,7 @@ const AreaDetail = () => {
                             color: 'inherit'
                           } as React.CSSProperties & { '--hover-color': string }}
                         >
-                          {service.service_name} {cityName}
+                          {serviceTitle} {cityName}
                         </h4>
                         <p className="text-gray-600 leading-relaxed text-sm">
                           {getTruncatedDescription(service.service_description)}
@@ -1240,7 +1323,7 @@ const AreaDetail = () => {
           </section>
           {/* CTA */}
 
-          {renderCTA(CTA, pageType, 'slot2', phoneNumber, projectCategory)}
+          {renderCTA(CTA, pageType, 'slot2', phoneNumber)}
 
           {/* Why Choose Us Section */}
           <section className="py-16 bg-gray-50">
@@ -1300,7 +1383,7 @@ const AreaDetail = () => {
                           {feature.iconClass ? (
                             <div style={{ color: colors.primaryButton.bg }}>
                               <DynamicFAIcon 
-                                iconClass={feature.iconClass} 
+                                iconClass={feature.iconClass || ''} 
                                 className="text-2xl"
                               />
                             </div>
@@ -1393,7 +1476,7 @@ const AreaDetail = () => {
                                 }}
                               >
                                 <DynamicFAIcon 
-                                  iconClass={step.iconClass} 
+                                  iconClass={step.iconClass || ''} 
                                   className="text-2xl text-white"
                                 />
                               </div>
@@ -1451,7 +1534,7 @@ const AreaDetail = () => {
           </section>
           {/* CTA */}
 
-          {renderCTA(CTA, pageType, 'slot3', phoneNumber, projectCategory)}
+          {renderCTA(CTA, pageType, 'slot3', phoneNumber)}
 
 
 
@@ -1482,10 +1565,12 @@ const AreaDetail = () => {
 
               {/* Areas Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                {projectLocations.map((area, index) => (
+                {projectLocations.map((area, index) => {
+                  const locationHref = handleLocationClick(area.slug || '');
+                  return (
                   <Link
                     key={index}
-                    href={handleLocationClick(area.slug)}
+                    href={locationHref}
                     onClick={(e) => {
                       e.preventDefault();
                       if (typeof window !== 'undefined') {
@@ -1499,7 +1584,7 @@ const AreaDetail = () => {
                           _id: area._id,
                         }));
                       }
-                      router.push(handleLocationClick(area.slug));
+                      router.push(locationHref);
                     }}
                     data-state={{
                       id: area.location_id,
@@ -1593,7 +1678,8 @@ const AreaDetail = () => {
                       ></div>
                     </div>
                   </Link>
-                ))}
+                );
+                })}
               </div>
 
               {/* Bottom CTA */}
@@ -1677,7 +1763,7 @@ const AreaDetail = () => {
                           }}
                         >
                           {guarantee.iconClass
-                            ? <DynamicFAIcon iconClass={guarantee.iconClass} className="text-white text-2xl" />
+                            ? <DynamicFAIcon iconClass={guarantee.iconClass || ''} className="text-white text-2xl" />
                             : <Award className="w-8 h-8 text-white" />
                           }
                         </div>
@@ -1941,7 +2027,7 @@ const AreaDetail = () => {
 
           {/* CTA */}
 
-          {renderCTA(CTA, pageType, 'slot4', phoneNumber, projectCategory)}
+          {renderCTA(CTA, pageType, 'slot4', phoneNumber)}
 
 
 
@@ -1986,7 +2072,10 @@ const AreaDetail = () => {
               {/* FAQ Accordion */}
               <div className="max-w-4xl mx-auto">
                 <div className="space-y-4">
-                  {projectFaqs.map((faq, index) => (
+                  {projectFaqs.map((faq, index) => {
+                    const question = faq.question || `Frequently asked question ${index + 1}`;
+                    const answer = faq.answer || 'Detailed answer coming soon.';
+                    return (
                     <div 
                       key={index} 
                       className="group bg-white rounded-3xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl"
@@ -2021,7 +2110,7 @@ const AreaDetail = () => {
                             <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                           </div>
                           <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 pr-4 leading-tight">
-                            {faq.question}
+                            {question}
                           </h3>
                         </div>
                         <div 
@@ -2048,13 +2137,14 @@ const AreaDetail = () => {
                         >
                           <div className="pt-4">
                             <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-                              {faq.answer}
+                              {answer}
                             </p>
                           </div>
                         </div>
                       )}
                     </div>
-                  ))}
+                  );
+                  })}
                 </div>
               </div>
 

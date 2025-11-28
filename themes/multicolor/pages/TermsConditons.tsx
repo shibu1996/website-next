@@ -33,9 +33,18 @@ const TermsConditions = () => {
 
   const safeColors = colors || fallbackColors;
 
+  // Get origin safely (works in both SSR and client)
+  const getOrigin = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.origin;
+    }
+    // Fallback for SSR - use environment variable or default
+    return process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+  };
+
   const [termsContent, setTermsContent] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const projectId = getProjectId();
 
@@ -43,7 +52,7 @@ const TermsConditions = () => {
   const pageSchema = generateWebPageSchema({
     name: 'Terms & Conditions - US Plumbers',
     description: 'Terms and Conditions for US Plumbers services. Learn about our service terms, policies, and user agreements.',
-    url: `${window.location.origin}/terms-conditions`
+    url: `${getOrigin()}/terms-conditions`
   });
   useSchemaMarkup(pageSchema, 'terms-conditions-page');
 
@@ -80,7 +89,7 @@ const TermsConditions = () => {
       <SEOHead
         title="Terms & Conditions - US Plumbers | Service Terms & Policies"
         description="Terms and Conditions for US Plumbers. Learn about our service terms, policies, liability, and user agreements for plumbing services."
-        canonical={`${window.location.origin}/terms-conditions`}
+        canonical={`${getOrigin()}/terms-conditions`}
       />
 
       <Header />

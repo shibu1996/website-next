@@ -5,8 +5,10 @@ import { MapPin, Navigation, Globe } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+type PageType = 'country' | 'state' | 'city' | 'local_area';
+
 // The pageType prop will decide the zoom level for map
-const getZoomLevel = (pageType) => {
+const getZoomLevel = (pageType: PageType | string): number => {
   switch (pageType) {
     case 'country': return 3;
     case 'state': return 7;
@@ -20,20 +22,27 @@ const MAPBOX_TOKEN = 'pk.eyJ1Ijoic2pibG9nczIwMjMiLCJhIjoiY21iM2ZmNDQ4MDZ5djJwc2F
 
 console.log(MAPBOX_TOKEN,"this is mapbox token");
 
+interface MapSectionProps {
+  locationName?: string;
+  lat?: number;
+  lng?: number;
+  pageType?: PageType | string;
+}
+
 const MapSection = ({
   locationName = 'Service Area',
   lat,
   lng,
   pageType = 'country'
-}) => {
+}: MapSectionProps) => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
   const mapRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
-    let map;
-    let mapboxgl;
+    let map: any;
+    let mapboxgl: any;
     let mounted = true;
 
     const loadMap = async () => {

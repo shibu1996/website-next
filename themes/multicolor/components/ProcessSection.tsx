@@ -7,10 +7,20 @@ import DynamicFAIcon from '../../../extras/DynamicFAIcon';
 import { useTheme } from '../contexts/ThemeContext';
 import { getProjectId } from '../../../hooks/getProjectId';
 
+interface ProcessStep {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  bgColor?: string;
+  borderColor?: string;
+  [key: string]: unknown;
+}
+
 const ProcessSection = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
-  const [processSteps, setProcessSteps] = useState([]);
+  const [processSteps, setProcessSteps] = useState<ProcessStep[]>([]);
   const [projectCategory, setProjectCategory] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 

@@ -7,11 +7,18 @@ import DynamicFAIcon from '../../../extras/DynamicFAIcon';
 import { useTheme } from '../contexts/ThemeContext';
 import { getProjectId } from '../../../hooks/getProjectId';
 
+interface WhyChooseUsFeature {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  [key: string]: unknown;
+}
+
 const WhyChooseUsSection = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
   const [projectName, setProjectName] = useState("");
-  const [projectWhyChooseUs, setProjectWhyChooseUs] = useState([]);
+  const [projectWhyChooseUs, setProjectWhyChooseUs] = useState<WhyChooseUsFeature[]>([]);
 
   const projectId = getProjectId();
 
@@ -63,7 +70,7 @@ const WhyChooseUsSection = () => {
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projectWhyChooseUs.map((feature, index) => (
+          {projectWhyChooseUs.map((feature: WhyChooseUsFeature, index: number) => (
             <div 
               key={index} 
               className="group relative bg-white rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl"

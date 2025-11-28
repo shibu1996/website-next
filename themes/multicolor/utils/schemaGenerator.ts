@@ -239,6 +239,15 @@ export const generateBreadcrumbSchema = (items: BreadcrumbItemData[]) => {
   };
 };
 
+// Helper function to get origin safely (works in both SSR and client)
+const getOrigin = () => {
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  // Fallback for SSR - use environment variable or default
+  return process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+};
+
 export const generateWebPageSchema = (data: WebPageSchemaData) => {
   return {
     "@context": "https://schema.org",
@@ -250,7 +259,7 @@ export const generateWebPageSchema = (data: WebPageSchemaData) => {
     "isPartOf": {
       "@type": "WebSite",
       "name": "Emergency Plumbing Service",
-      "url": data.isPartOf || window.location.origin
+      "url": data.isPartOf || getOrigin()
     }
   };
 };
@@ -287,7 +296,7 @@ export const generateContactPageSchema = (data?: ContactPageSchemaData) => {
     "@type": "ContactPage",
     "name": data?.name || "Contact Us - Emergency Plumbing Service",
     "description": data?.description || "Get in touch with Emergency Plumbing Service for 24/7 plumbing assistance",
-    "url": data?.url || `${window.location.origin}/contact`
+    "url": data?.url || `${getOrigin()}/contact`
   };
 };
 
@@ -297,6 +306,6 @@ export const generateAboutPageSchema = (data?: AboutPageSchemaData) => {
     "@type": "AboutPage",
     "name": data?.name || "About our services",
     "description": data?.description || "Learn about our professional services and experienced team",
-    "url": data?.url || `${window.location.origin}/about`
+    "url": data?.url || `${getOrigin()}/about`
   };
 };

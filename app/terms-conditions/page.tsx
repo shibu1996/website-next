@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Header from '@/themes/multicolor/components/Header';
 import Footer from '@/themes/multicolor/components/Footer';
 import SEOHead from '@/themes/multicolor/components/SEOHead';
@@ -36,16 +36,18 @@ const TermsConditions = () => {
 
   const [termsContent, setTermsContent] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const projectId = getProjectId();
 
   // SEO and schema
-  const pageSchema = generateWebPageSchema({
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const canonicalUrl = origin ? `${origin}/terms-conditions` : '/terms-conditions';
+  const pageSchema = useMemo(() => generateWebPageSchema({
     name: 'Terms & Conditions - US Plumbers',
     description: 'Terms and Conditions for US Plumbers services. Learn about our service terms, policies, and user agreements.',
-    url: `${window.location.origin}/terms-conditions`
-  });
+    url: canonicalUrl
+  }), [canonicalUrl]);
   useSchemaMarkup(pageSchema, 'terms-conditions-page');
 
   // Fetch Terms from API
@@ -81,7 +83,7 @@ const TermsConditions = () => {
       <SEOHead
         title="Terms & Conditions - US Plumbers | Service Terms & Policies"
         description="Terms and Conditions for US Plumbers. Learn about our service terms, policies, liability, and user agreements for plumbing services."
-        canonical={`${window.location.origin}/terms-conditions`}
+        canonical={canonicalUrl}
       />
 
       <Header />

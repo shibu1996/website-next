@@ -22,8 +22,14 @@ interface FetchPayload {
   areaType?: any;
 }
 
+interface ProjectService {
+  service_name?: string;
+  service_description?: string;
+  [key: string]: unknown;
+}
+
 const SchemaMarkup = ({ areaId, areaType }: SchemaMarkupProps) => {
-  const [projectServices, setProjectServices] = useState([]);
+  const [projectServices, setProjectServices] = useState<ProjectService[]>([]);
   const [projectCategory, setProjectCategory] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
@@ -111,12 +117,12 @@ const SchemaMarkup = ({ areaId, areaType }: SchemaMarkupProps) => {
   });
 
   const formattedServices = projectServices.map(service => ({
-    name: service.service_name,
-    description: service.service_description,
+    name: service.service_name || '',
+    description: service.service_description || '',
     provider: projectName,
     areaServed: mainLocation,
     serviceType: projectCategory,
-    url: `${window.location.origin}/services/${slugify(service.service_name)}`
+    url: `${window.location.origin}/services/${slugify(service.service_name || '')}`
   }));
 
   const servicesSchema = generateServiceSchema(formattedServices);

@@ -4,6 +4,15 @@ import { Award, Clock, Shield, DollarSign } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useGuaranteeData } from '../../../../hooks/useGuaranteeData.js';
 import DynamicFAIcon from '../../../../extras/DynamicFAIcon';
+
+interface GuaranteeItem {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  gradient?: string;
+  [key: string]: unknown;
+}
+
 const ServicesGuarantee = () => {
 
 
@@ -44,7 +53,7 @@ const ServicesGuarantee = () => {
 ];
 
 // Add gradient if missing
-const updatedGuarantees = guarantees.map((guarantee, index) => ({
+const updatedGuarantees = (guarantees || []).map((guarantee: GuaranteeItem, index: number) => ({
   ...guarantee,
   gradient: guarantee.gradient || colorSets[index % colorSets.length]  // Apply gradient if missing
 }));
@@ -64,7 +73,7 @@ console.log(updatedGuarantees);
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-          {updatedGuarantees.map((guarantee, index) => (
+          {updatedGuarantees.map((guarantee: GuaranteeItem, index: number) => (
             <Card key={index} className="bg-card border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-6">
                 <div className="text-center">

@@ -53,7 +53,7 @@ const AreaSchemaMarkup = ({ areaName, areaDescription }: AreaSchemaMarkupProps) 
   const localBusinessSchema = generateLocalBusinessSchema({
     name: businessDisplayName,
     description: descriptionText,
-    telephone: phoneNumber || undefined,
+    telephone: phoneNumber || "",
     address: {
       streetAddress: mainLocation || "",    // use your mainLocation string
       addressLocality: areaName,            // current area page

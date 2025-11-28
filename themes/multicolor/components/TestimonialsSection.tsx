@@ -7,10 +7,21 @@ import { generateReviewSchema } from "../../../hooks/schemaMarkup"; // use your 
 import { useTheme } from '../contexts/ThemeContext';
 import { getProjectId } from '../../../hooks/getProjectId';
 
+interface Testimonial {
+  rating?: string | number;
+  review?: string;
+  review_text?: string;
+  text?: string;
+  author?: string;
+  customer_name?: string;
+  name?: string;
+  [key: string]: unknown;
+}
+
 const TestimonialsSection = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
-  const [testimonials, setTestimonials] = useState([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   const projectId = getProjectId();
 
@@ -68,7 +79,7 @@ const TestimonialsSection = () => {
 
           {/* Testimonials Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => {
+            {testimonials.map((testimonial: Testimonial, index: number) => {
               const rawRating = Number(testimonial.rating) || 0;
               const fullStars = Math.floor(rawRating);
               const hasHalf = rawRating - fullStars >= 0.5;
@@ -119,7 +130,7 @@ const TestimonialsSection = () => {
                   {/* Review Text */}
                   <div className="relative flex-1">
                     <p className="text-gray-700 mb-6 leading-relaxed text-center italic">
-                      "{testimonial.review_text || testimonial.text}"
+                      "{String(testimonial.review_text || testimonial.text || '')}"
                     </p>
                   </div>
 
@@ -132,7 +143,7 @@ const TestimonialsSection = () => {
                       }}
                     >
                       <h4 className="font-bold text-gray-900">
-                        {testimonial.customer_name || testimonial.name}
+                        {String(testimonial.customer_name || testimonial.name || '')}
                       </h4>
                     </div>
                   </div>

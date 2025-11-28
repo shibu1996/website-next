@@ -25,11 +25,34 @@ import DynamicFAIcon from '@/extras/DynamicFAIcon';
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
 import Loader from '@/themes/multicolor/components/Loader';
 
+interface AreaLocation {
+  slug?: string;
+  location_id?: string;
+  name?: string;
+  sortname?: string;
+  description?: string;
+  _id?: string;
+  [key: string]: unknown;
+}
+
+interface CTAItem {
+  title?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
+interface WhyChooseUsFeature {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  [key: string]: unknown;
+}
+
 const Areas = () => {
   const breadcrumbItems = [
     { label: "Areas" }
   ];
-  const [whyChooseUsAboutPage, setWhyChooseUsAboutPage] = useState([]);
+  const [whyChooseUsAboutPage, setWhyChooseUsAboutPage] = useState<WhyChooseUsFeature[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const { seoData } = useSEO('/areas');
@@ -44,8 +67,8 @@ const Areas = () => {
   const [welcomeLine, setWelcomeLine] = useState("");
 
   const [UpcomingPage, setUpcomingPage] = useState("");
-  const [locations, setLocations] = useState([]);
-  const [CTA, setCTA] = useState([]);
+  const [locations, setLocations] = useState<AreaLocation[]>([]);
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -119,7 +142,7 @@ const Areas = () => {
 
   console.log(locations, "locations");
 
-  const handleLocationClick = (area, isButtonClick) => {
+  const handleLocationClick = (area: AreaLocation, isButtonClick?: boolean) => {
     const slugPath = `/${area.slug}`;
 
     // If navigating to this page, pass the scroll flag
@@ -157,7 +180,7 @@ const Areas = () => {
     return '';
   };
 
-  const getCTAContent = (index) => {
+  const getCTAContent = (index: number): CTAItem => {
     if (CTA.length === 0) {
       return { title: "Ready to Get Started?", description: "Contact us for professional services in your area" };
     }

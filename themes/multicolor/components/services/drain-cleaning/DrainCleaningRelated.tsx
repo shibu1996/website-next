@@ -8,9 +8,24 @@ import humanizeString from "../../../../../extras/stringUtils.js";
 import { useTheme } from '../../../contexts/ThemeContext';
 import { ArrowRight } from 'lucide-react';
 
-const ServicesSection = ({ serviceId, cta3, phoneNumber, locationUrl }) => {
-  const [projectServices, setProjectServices] = useState([]);
-  const [projectId, setProjectId] = useState(null);
+interface ServicesSectionProps {
+  serviceId?: string;
+  cta3?: any;
+  phoneNumber?: string;
+  locationUrl?: string;
+}
+
+interface ProjectService {
+  _id?: string;
+  service_name?: string;
+  service_description?: string;
+  images?: Array<{ url?: string }>;
+  [key: string]: unknown;
+}
+
+const ServicesSection = ({ serviceId, cta3, phoneNumber, locationUrl }: ServicesSectionProps) => {
+  const [projectServices, setProjectServices] = useState<ProjectService[]>([]);
+  const [projectId, setProjectId] = useState<string | null>(null);
   const { getThemeColors } = useTheme();
   
   // Fallback colors in case theme context is not loaded
@@ -28,10 +43,10 @@ const ServicesSection = ({ serviceId, cta3, phoneNumber, locationUrl }) => {
 
   useEffect(() => {
     const id = getProjectId();
-    setProjectId(id);
+    setProjectId(id || null);
   }, []);
 
-  const getTruncatedDescription = (text) => {
+  const getTruncatedDescription = (text: string | undefined): string => {
     if (!text) return '';
     const idx = text.indexOf('.');
     return idx !== -1 ? text.substring(0, idx + 1) : text;
@@ -43,7 +58,7 @@ const ServicesSection = ({ serviceId, cta3, phoneNumber, locationUrl }) => {
   if (safeLocationUrl) {
     const parts = safeLocationUrl.split("/services/");
     if (parts.length > 0) {
-      locationName = parts[0].split("/").pop();
+      locationName = parts[0].split("/").pop() || '';
     }
   }
   if (locationName && locationName.trim() !== "") {
@@ -52,8 +67,8 @@ const ServicesSection = ({ serviceId, cta3, phoneNumber, locationUrl }) => {
     locationName = "";
   }
 
-  const handleServiceClick = (service) => {
-    const serviceName = service.service_name.toLowerCase().replace(/\s+/g, '-');
+  const handleServiceClick = (service: ProjectService) => {
+    const serviceName = (service.service_name || '').toLowerCase().replace(/\s+/g, '-');
     // Build the path - if locationUrl is provided, use it, otherwise use just /services
     const basePath = safeLocationUrl ? safeLocationUrl.split("/services/")[0] : '';
     const servicePath = basePath ? `${basePath}/services/${serviceName}` : `/services/${serviceName}`;
@@ -62,8 +77,8 @@ const ServicesSection = ({ serviceId, cta3, phoneNumber, locationUrl }) => {
       href: servicePath,
       serviceData: {
         serviceId: service._id,
-        serviceName: service.service_name,
-        serviceDescription: service.service_description,
+        serviceName: service.service_name || '',
+        serviceDescription: service.service_description || '',
         serviceImage: service.images?.[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
         serviceImage1: service.images?.[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
         serviceImage2: service.images?.[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
@@ -77,7 +92,7 @@ const ServicesSection = ({ serviceId, cta3, phoneNumber, locationUrl }) => {
         const { data } = await httpFile.post("/webapp/v1/fetch_random_services", { projectId });
         if (data) {
           setProjectServices(
-            (data.services || []).filter(service => service._id !== serviceId)
+            (data.services || []).filter((service: ProjectService) => service._id !== serviceId)
           );
         }
       } catch (error) {
@@ -128,8 +143,8 @@ const ServicesSection = ({ serviceId, cta3, phoneNumber, locationUrl }) => {
               {/* Image Container */}
               <div className="relative h-48 overflow-hidden">
                 <img
-                  src={service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
-                  alt={service.service_name}
+                  src={service.images?.[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
+                  alt={service.service_name || 'Service'}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 
@@ -162,7 +177,7 @@ const ServicesSection = ({ serviceId, cta3, phoneNumber, locationUrl }) => {
               {/* Content */}
               <div className="p-6 space-y-3">
                 <h4 className="font-bold text-lg leading-tight text-gray-900 group-hover:transition-colors duration-300">
-                  {service.service_name} {locationName}
+                  {service.service_name || 'Service'} {locationName}
                 </h4>
                 <p className="text-gray-600 leading-relaxed text-sm">
                   {getTruncatedDescription(service.service_description)}

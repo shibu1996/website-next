@@ -11,13 +11,27 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from '../contexts/ThemeContext';
 import Loader from './Loader';
 
+interface Service {
+  _id?: string;
+  service_name?: string;
+  [key: string]: unknown;
+}
+
+interface Location {
+  _id?: string;
+  location_id?: string | number;
+  name?: string;
+  slug?: string;
+  [key: string]: unknown;
+}
+
 const Header = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [services, setServices] = useState([]);
-  const [locations, setLocations] = useState([]);
-  const [projectId, setProjectId] = useState(null);
+  const [services, setServices] = useState<Service[]>([]);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [projectId, setProjectId] = useState<string | null>(null);
   const router = useRouter();
 
 
@@ -25,14 +39,14 @@ const Header = () => {
 
   useEffect(() => {
     const id = getProjectId();
-    setProjectId(id);
+    setProjectId(id || null);
   }, []);
 
   useEffect(() => {
     const fetchHeaderData = async () => {
       try {
         const formData = new FormData();
-        formData.append('projectId', projectId);
+        formData.append('projectId', projectId || '');
         const response = await httpFile.post('/webapp/v1/getheader', formData);
         if (response.data?.services) setServices(response.data.services);
         if (response.data?.locations) setLocations(response.data.locations);
@@ -168,7 +182,7 @@ const Header = () => {
                 {services.slice(0, 6).map((service) => (
                   <Link
                     key={service._id}
-                    href={`/services/${service.service_name.toLowerCase().replace(/\s+/g, '-')}`}
+                    href={`/services/${(service.service_name || '').toLowerCase().replace(/\s+/g, '-')}`}
                     className="block w-full px-4 py-2 text-sm transition-colors duration-200"
                     style={{ color: '#1f2937' }}
                     onMouseEnter={(e) => {
@@ -180,7 +194,7 @@ const Header = () => {
                       e.currentTarget.style.color = '#1f2937';
                     }}
                   >
-                    {service.service_name}
+                    {service.service_name || 'Service'}
                   </Link>
                 ))}
                 <div 
@@ -222,9 +236,9 @@ const Header = () => {
                   border: `1px solid ${colors.primaryButton.bg}20`
                 }}
               >
-                {locations.slice(0, 6).map((loc) => (
+                {locations.slice(0, 6).map((loc, idx) => (
                   <Link
-                    key={loc.location_id}
+                    key={loc.location_id || loc._id || idx}
                     href={loc?.slug ? `/${loc.slug}` : '#'}
                     className="block w-full px-4 py-2 text-sm transition-colors duration-200"
                     style={{ color: '#1f2937' }}
@@ -470,7 +484,7 @@ const Header = () => {
                   {services.map((service) => (
                     <Link
                       key={service._id}
-                      href={`/services/${service.service_name.toLowerCase().replace(/\s+/g, '-')}`}
+                      href={`/services/${(service.service_name || '').toLowerCase().replace(/\s+/g, '-')}`}
                       className="p-3 rounded-lg text-sm transition-colors duration-200"
                       style={{ 
                         backgroundColor: `${colors.primaryButton.bg}05`,
@@ -487,7 +501,7 @@ const Header = () => {
                         e.currentTarget.style.color = '#1f2937';
                       }}
                     >
-                      {service.service_name}
+                      {service.service_name || 'Service'}
                     </Link>
                   ))}
                 </div>
@@ -499,9 +513,9 @@ const Header = () => {
                   Service Areas
                 </h4>
                 <div className="grid grid-cols-2 gap-2">
-                  {locations.map((loc) => (
+                  {locations.map((loc, idx) => (
                     <Link
-                      key={loc.location_id}
+                      key={loc.location_id || loc._id || idx}
                       href={loc?.slug ? `/${loc.slug}` : '#'}
                       className="p-3 rounded-lg text-sm transition-colors duration-200"
                       style={{ 

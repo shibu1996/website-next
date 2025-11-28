@@ -8,6 +8,12 @@ import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
+interface CTAItem {
+  title?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
 const ContactHero = () => {
     const router = useRouter();
     const pathname = usePathname(); 
@@ -17,7 +23,7 @@ const ContactHero = () => {
     const [mainLocation, setMainLocation] = useState("");
     const [projectCategory, setProjectCategory] = useState("");
     const [image, setImage] = useState("");
-    const [CTA, setCTA] = useState([]);
+    const [CTA, setCTA] = useState<CTAItem[]>([]);
   
     const savedSiteId = localStorage.getItem("currentSiteId");
     const projectId = getProjectId();
@@ -59,7 +65,7 @@ const ContactHero = () => {
     }, [projectId]);
   
   
-    const getCTAContent = (index) => {
+    const getCTAContent = (index: number): CTAItem => {
       if (CTA.length === 0) {
         return { title: "What are you waiting for", description: "Contact us for our services" };
       }

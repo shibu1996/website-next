@@ -125,3 +125,9 @@ Check these files:
 
 All critical fixes are done. You can now test the home page and see if everything works correctly.
 
+
+
+
+
+
+

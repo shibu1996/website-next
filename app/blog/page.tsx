@@ -86,7 +86,7 @@ const Blogs = () => {
 
         // Fetch blog data with featured images using the same API as RelatedBlogs
         const formData = new FormData();
-        formData.append("projectId", projectId);
+        formData.append("projectId", projectId || "");
         formData.append("limit", "50"); // Get more blogs
 
         const { data } = await httpFile.post("/admin/v1/related_blogs", formData, {

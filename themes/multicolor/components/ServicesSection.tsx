@@ -6,19 +6,31 @@ import { httpFile } from '@/config';
 import { getProjectId } from '../../../hooks/getProjectId';
 import { useTheme } from '../contexts/ThemeContext';
 
-const ServicesSection = ({ formattedLocationName = "" }) => {
+interface ServicesSectionProps {
+  formattedLocationName?: string;
+}
+
+interface ProjectService {
+  _id?: string;
+  service_name?: string;
+  service_description?: string;
+  images?: Array<{ url?: string }>;
+  [key: string]: unknown;
+}
+
+const ServicesSection = ({ formattedLocationName = "" }: ServicesSectionProps) => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
-  const [projectServices, setProjectServices] = useState([]);
+  const [projectServices, setProjectServices] = useState<ProjectService[]>([]);
   const [projectCategory, setProjectCategory] = useState("");
-  const [projectId, setProjectId] = useState(null);
+  const [projectId, setProjectId] = useState<string | null>(null);
 
   useEffect(() => {
     const id = getProjectId();
-    setProjectId(id);
+    setProjectId(id || null);
   }, []);
 
-  const getTruncatedDescription = (text) => {
+  const getTruncatedDescription = (text: string | undefined): string => {
     if (!text) return '';
     const idx = text.indexOf('.');
     return idx !== -1 ? text.substring(0, idx + 1) : text;
@@ -101,8 +113,8 @@ const ServicesSection = ({ formattedLocationName = "" }) => {
               {/* Image Container */}
               <div className="relative h-48 overflow-hidden">
                 <img
-                  src={service.images[0]?.url && service.images[0].url.trim() ? service.images[0].url : "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
-                  alt={service.service_name}
+                  src={service.images?.[0]?.url && service.images[0].url.trim() ? service.images[0].url : "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
+                  alt={service.service_name || 'Service'}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   loading="lazy"
                   decoding="async"

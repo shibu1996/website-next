@@ -33,18 +33,73 @@ import humanizeString from "../../../extras/stringUtils.js";
 import DynamicFAIcon from '../../../extras/DynamicFAIcon'; // make sure the path is correct
 import { removeDot } from "../../../extras/removeDot.js";
 import Link from 'next/link';
+// @ts-ignore - react-helmet-async may not be installed
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { slugify } from "../../../extras/slug";
 import { useSEO } from '../../../hooks/useSEO';
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import Loader from '../components/Loader';
+
 interface Testimonial {
-  review_text: string;
-  customer_image: string;
-  customer_name: string;
-  rating: number | string;
+  review_text?: string;
+  customer_image?: string;
+  customer_name?: string;
+  rating?: number | string;
+  [key: string]: unknown;
+}
+
+interface ProcessStep {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  bgColor?: string;
+  borderColor?: string;
+  number?: string | number;
+  [key: string]: unknown;
+}
+
+interface SubService {
+  service_name?: string;
+  service_description?: string;
+  [key: string]: unknown;
+}
+
+interface GuaranteeItem {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  bgColor?: string;
+  [key: string]: unknown;
+}
+
+interface WhyChooseUsFeature {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  [key: string]: unknown;
+}
+
+interface ServiceGroup {
+  groupTitle?: string;
+  items?: SubService[];
+  [key: string]: unknown;
+}
+
+interface FAQItem {
+  question?: string;
+  answer?: string;
+  [key: string]: unknown;
+}
+
+interface ServiceDetails {
+  service_name?: string;
+  service_description?: string;
+  images?: Array<{ url?: string }>;
+  [key: string]: unknown;
 }
 
 const DrainCleaning = () => {
@@ -78,12 +133,12 @@ const DrainCleaning = () => {
   const router = useRouter();
   const pathname = usePathname();
   
-  const [projectOurProcess, setprojectOurProcess] = useState([]);
+  const [projectOurProcess, setprojectOurProcess] = useState<ProcessStep[]>([]);
   const [slugApiCompleted, setSlugApiCompleted] = useState(false); // Tracks slug API completion
-  const [serviceDetails, setServiceDetails] = useState(null);
+  const [serviceDetails, setServiceDetails] = useState<ServiceDetails | null>(null);
   const [serviceImage, setServiceImage] = useState("");
   const [ProjectBaseImage, setProjectBaseImage] = useState("");
-  const [stepProcess, setStepProcess] = useState([]);
+  const [stepProcess, setStepProcess] = useState<ProcessStep[]>([]);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
 
@@ -95,13 +150,13 @@ const DrainCleaning = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [reloadFlag, setReloadFlag] = useState(0);
   const [aboutService, setAboutService] = useState('');
-  const [subServices, setSubServices] = useState([]);
+  const [subServices, setSubServices] = useState<SubService[]>([]);
 
   const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
   // Note: Next.js doesn't support route state, use query params or localStorage if needed
   const [serviceId, setServiceId] = useState("");
   let displayServiceName = humanizeString(urlServiceName) || 'Residential Cleaning';
-  const [guarantees, setGuarantees] = useState([]);
+  const [guarantees, setGuarantees] = useState<GuaranteeItem[]>([]);
   const [guaranteeText, setGuaranteeText] = useState("");
   const [promiseLine, setPromiseLine] = useState("");
   const [projectCategory, setProjectCategory] = useState("");
@@ -109,13 +164,18 @@ const DrainCleaning = () => {
   const [locationName, setDisplayLocationName] = useState("");
   const [areaType, setAreaType] = useState("");
   const [areaId, setAreaId] = useState("");
-  const [cta1, setCta1] = useState(null);
-  const [cta2, setCta2] = useState(null);
-  const [cta3, setCta3] = useState(null);
-  const [cta4, setCta4] = useState(null);
-  const [projectWhyChooseUs, setprojectWhyChooseUs] = useState([]);
-  const [serviceGroups, setServiceGroups] = useState([]);  // Dynamic groups from API
-  const [projectFaqs, setprojectFaqs] = useState([]);
+  interface CTAItem {
+    title?: string;
+    description?: string;
+    [key: string]: unknown;
+  }
+  const [cta1, setCta1] = useState<CTAItem | null>(null);
+  const [cta2, setCta2] = useState<CTAItem | null>(null);
+  const [cta3, setCta3] = useState<CTAItem | null>(null);
+  const [cta4, setCta4] = useState<CTAItem | null>(null);
+  const [projectWhyChooseUs, setprojectWhyChooseUs] = useState<WhyChooseUsFeature[]>([]);
+  const [serviceGroups, setServiceGroups] = useState<ServiceGroup[]>([]);  // Dynamic groups from API
+  const [projectFaqs, setprojectFaqs] = useState<FAQItem[]>([]);
 
   const stepColors = [
     'bg-red-500',
@@ -252,7 +312,7 @@ const DrainCleaning = () => {
           setServiceImage(data.service.images?.[0]?.url || "");
           setProjectBaseImage(data.service.images?.[2]?.url || "");
           setStepProcess(
-            (data.service.steps_process || []).map((step, index) => ({
+            (data.service.steps_process || []).map((step: ProcessStep, index: number) => ({
               ...step,
               color: stepColors[index % stepColors.length],
               number: index + 1  // Also set number for display
@@ -272,7 +332,7 @@ const DrainCleaning = () => {
 
 
           setGuarantees(
-            (data.service.ourGuaranteeSection || []).map((item, index) => ({
+            (data.service.ourGuaranteeSection || []).map((item: GuaranteeItem, index: number) => ({
               ...item,
               gradient: gradients[index % gradients.length]
             }))
@@ -289,9 +349,9 @@ const DrainCleaning = () => {
 
           // Parse subServices from comma-separated string
           const subServicesArray = Array.isArray(data.service.subServices)
-            ? data.service.subServices.map(item => item.trim()).filter(Boolean) // If it's an array, trim and filter
+            ? data.service.subServices.map((item: any) => String(item).trim()).filter(Boolean) // If it's an array, trim and filter
             : typeof data.service.subServices === 'string'
-              ? data.service.subServices.split(',').map(item => item.trim()).filter(Boolean) // If it's a string, split, trim, and filter
+              ? data.service.subServices.split(',').map((item: string) => item.trim()).filter(Boolean) // If it's a string, split, trim, and filter
               : []; // Default to an empty array if it's neither a string nor an array
 
           setSubServices(subServicesArray);
@@ -374,13 +434,27 @@ const DrainCleaning = () => {
     });
   }, [location.pathname, displayServiceName]);
 
+  // Get origin and pathname safely (works in both SSR and client)
+  const getOrigin = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.origin;
+    }
+    return process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+  };
 
-  const locationUrl = window.location.pathname.split('/services/')[0];
+  const getLocationUrl = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.pathname.split('/services/')[0];
+    }
+    return '';
+  };
+
+  const locationUrl = getLocationUrl();
 
 
   const faqSchema = generateFAQSchema(projectFaqs);
   const reviewSchema = generateReviewSchema(projectReviews);
-const coloredSteps = stepProcess.map((step, i) => ({
+const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
   ...step,
   color: step.color || stepColors[i % stepColors.length], // Use stepColors array
   bgColor: step.bgColor || stepColors[i % stepColors.length], // Use stepColors for bgColor
@@ -430,7 +504,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
         <ServiceSchemaMarkup
           serviceName="Professional Drain Cleaning Services"
           serviceDescription="Expert drain cleaning solutions to keep your pipes flowing smoothly. 24/7 emergency service available with fast response times."
-          serviceUrl={`${window.location.origin}/services/drain-cleaning`}
+          serviceUrl={`${getOrigin()}/services/drain-cleaning`}
         />
         <Header />
         {/* Hero Section */}
@@ -782,7 +856,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
             {/* Cards Grid */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {projectWhyChooseUs.map((feature, index) => {
+              {projectWhyChooseUs.map((feature: WhyChooseUsFeature, index: number) => {
                 return (
                   <div
                     key={index}
@@ -889,7 +963,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
     {/* Services Grid - Dynamic with Inline Static Fallbacks */}
     <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
-      {serviceGroups.slice(0, 4).map((group, groupIndex) => {
+      {serviceGroups.slice(0, 4).map((group: ServiceGroup, groupIndex: number) => {
         // Inline static fallbacks (your original data, no state refs)
         const staticData = [
           { title: "Residential Services", icon: "fas fa-home", subtitle: "Home & Family Solutions", items: [] },  // Empty items for dynamic
@@ -952,7 +1026,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
                   }}
                 >
                   <DynamicFAIcon 
-                    iconClass={groupIcon} 
+                    iconClass={String(groupIcon || '')} 
                     className="w-8 h-8 text-white"
                   />
                 </div>
@@ -969,7 +1043,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
             {/* Services List - Dynamic */}
             <div className="p-6 space-y-3">
-              {dynamicItems.map((item, idx) => (
+              {dynamicItems.map((item: SubService, idx: number) => (
                 <div key={idx} className="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group/item">
                   <div 
                     className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover/item:scale-110"
@@ -979,12 +1053,12 @@ const coloredSteps = stepProcess.map((step, i) => ({
                     }}
                   >
                     <DynamicFAIcon 
-                      iconClass={item.iconClass || "fas fa-cogs"} 
+                      iconClass={String((item as SubService).iconClass || "fas fa-cogs")} 
                       className="w-5 h-5"
                     />
                   </div>
                   <span className="text-sm font-medium text-gray-700 group-hover/item:text-gray-900 transition-colors">
-                    {item.title}
+                    {(item as SubService).service_name || ''}
                   </span>
                 </div>
               ))}
@@ -1056,7 +1130,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
                 {/* Book Button */}
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className="group relative px-6 py-4 rounded-xl transition-all duration-300 hover:scale-105 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30"
                 >
                   <div className="flex items-center gap-3">
@@ -1149,7 +1223,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
               {/* Process Steps */}
               <div className="space-y-12 lg:space-y-16">
-                {coloredSteps.map((step, index) => (
+                {coloredSteps.map((step: ProcessStep, index: number) => (
                   <div
                     key={index}
                     className={`flex items-center ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} flex-col gap-8 lg:gap-12`}
@@ -1181,8 +1255,8 @@ const coloredSteps = stepProcess.map((step, i) => ({
                         )}
 
                         {/* Content */}
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.stepName}</h3>
-                        <p className="text-gray-600 text-lg leading-relaxed">{step.serviceDescription}</p>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.title || ''}</h3>
+                        <p className="text-gray-600 text-lg leading-relaxed">{step.description || ''}</p>
                       </div>
                     </div>
                     {/* Step Number Circle */}
@@ -1193,7 +1267,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
                           background: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`
                         }}
                       >
-                        {step.number}
+                        {String(step.number || '')}
                       </div>
 
                       {/* Arrow */}
@@ -1215,7 +1289,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
                           background: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`
                         }}
                       >
-                        {step.number}
+                        {String(step.number || '')}
                       </div>
                     </div>
 
@@ -1261,7 +1335,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
             {/* Features Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projectWhyChooseUs.map((feature, index) => (
+              {projectWhyChooseUs.map((feature: WhyChooseUsFeature, index: number) => (
                 <div
                   key={index}
                   className="group relative bg-white rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl"
@@ -1352,7 +1426,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
             {/* Guarantee Cards Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {guarantees.map((guarantee, index) => (
+              {guarantees.map((guarantee: GuaranteeItem, index: number) => (
                 <div
                   key={index}
                   className="group relative bg-white rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl"
@@ -1543,7 +1617,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
                 {/* Book Button */}
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className="group relative px-6 py-4 rounded-xl transition-all duration-300 hover:scale-105 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30"
                 >
                   <div className="flex items-center gap-3">
@@ -1748,7 +1822,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
             {/* FAQ Accordion */}
             <div className="max-w-4xl mx-auto">
               <div className="space-y-4">
-                {projectFaqs.map((faq, index) => (
+                {projectFaqs.map((faq: FAQItem, index: number) => (
                   <div
                     key={index}
                     className="group bg-white rounded-3xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl"
@@ -1902,7 +1976,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
                 {/* Book Button */}
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className="group relative px-6 py-4 rounded-xl transition-all duration-300 hover:scale-105 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30"
                 >
                   <div className="flex items-center gap-3">

@@ -10,10 +10,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useTheme } from '../contexts/ThemeContext';
 import { getProjectId } from '../../../hooks/getProjectId';
 
+interface AreaLocation {
+  slug?: string;
+  name?: string;
+  sortname?: string;
+  _id?: string;
+  location_id?: string;
+  [key: string]: unknown;
+}
+
 const AreasSection = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
-  const [locations, setLocations] = useState([]);
+  const [locations, setLocations] = useState<AreaLocation[]>([]);
   const [projectCategory, setProjectCategory] = useState("");
   const [UpcomingPage, setUpcomingPage] = useState("");
   const router = useRouter();
@@ -50,12 +59,12 @@ const AreasSection = () => {
     return "";
   };
 
-  const handleLocationClick = (area) => {
-    return `/${area.slug}`;
+  const handleLocationClick = (area: AreaLocation) => {
+    return `/${area.slug || ''}`;
   };
 
   // Handler for "See Areas" button: Navigate with scroll state
-  const handleSeeAreasClick = (area, e) => {
+  const handleSeeAreasClick = (area: AreaLocation, e: React.MouseEvent) => {
     e.preventDefault(); // Prevent any default link behavior if needed
     // Store state in localStorage for the target page to access
     const state = {
@@ -70,7 +79,7 @@ const AreasSection = () => {
   };
 
   // Common state for outer Link (no scroll flag)
-  const commonState = (area) => ({
+  const commonState = (area: AreaLocation) => ({
     id: area.location_id,
     projectId,
     UpcomingPage,

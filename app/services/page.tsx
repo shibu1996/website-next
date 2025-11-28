@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { Calendar } from 'lucide-react';
 import { Phone, Star, Sparkles, Home, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import humanizeString from "../../../extras/stringUtils.js";
+import humanizeString from "@/extras/stringUtils";
 import { useParams, useRouter } from "next/navigation";
 
 import Header from '@/themes/multicolor/components/Header';
@@ -31,6 +31,12 @@ import SEOHead from '@/themes/multicolor/components/SEOHead';
 import { httpFile } from "@/config";
 import Loader from '@/themes/multicolor/components/Loader';
 
+interface CTAItem {
+  title?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
 const Services = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
@@ -44,7 +50,7 @@ const Services = () => {
   const [backgroundImage, setBackgroundImage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const [CTA, setCTA] = useState([]);
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
   const [projectCategory, setProjectCategory] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectDescriptions, setProjectDescriptions] = useState([]);
@@ -157,7 +163,7 @@ const Services = () => {
     })();
   }, [projectId]);
 
-  const getCTAContent = (index) => {
+  const getCTAContent = (index: number): CTAItem => {
     if (CTA.length === 0) {
       return { title: "What are you waiting for?", description: "Contact us for our services" };
     }

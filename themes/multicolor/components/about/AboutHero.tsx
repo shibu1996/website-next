@@ -2,7 +2,13 @@
 import { Phone, Clock, Star, Shield, Award, Sparkles, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const AboutHero = ({projectCategory,phoneNumber,aboutHeroText}) => {
+interface AboutHeroProps {
+  projectCategory?: string;
+  phoneNumber?: string;
+  aboutHeroText?: string;
+}
+
+const AboutHero = ({projectCategory,phoneNumber,aboutHeroText}: AboutHeroProps) => {
   return (
     <section
       className="relative min-h-[80vh] md:min-h-[85vh] flex items-center justify-center py-8 px-16 transition-all duration-300 overflow-hidden"

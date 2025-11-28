@@ -118,7 +118,7 @@ const NotFound = () => {
               {/* Primary Actions */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
-                  to="/"
+                  href="/"
                   className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 hover:scale-105"
                   style={{
                     backgroundColor: colors.primaryButton.bg,
@@ -187,7 +187,7 @@ const NotFound = () => {
                 <p className="text-sm text-gray-500 mb-4">Or try these popular pages:</p>
                 <div className="flex flex-wrap gap-3 justify-center">
                   <Link
-                    to="/services"
+                    href="/services"
                     className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                     style={{
                       backgroundColor: `${colors.primaryButton.bg}10`,
@@ -197,7 +197,7 @@ const NotFound = () => {
                     Services
                   </Link>
                   <Link
-                    to="/about"
+                    href="/about"
                     className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                     style={{
                       backgroundColor: `${colors.primaryButton.bg}10`,
@@ -207,7 +207,7 @@ const NotFound = () => {
                     About Us
                   </Link>
                   <Link
-                    to="/contact"
+                    href="/contact"
                     className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                     style={{
                       backgroundColor: `${colors.primaryButton.bg}10`,

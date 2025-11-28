@@ -26,7 +26,7 @@ import { Target, Eye, CheckCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import DynamicFAIcon from '../../../extras/DynamicFAIcon';
 
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import Loader from '../components/Loader';
@@ -67,14 +67,37 @@ const About = () => {
   const [visionSubHeadings, setVisionSubHeadings] = useState([]);
   const [coreValuesIntro, setCoreValuesIntro] = useState("");
   const [commitment, setCommitment] = useState("");
-  const [coreValues, setCoreValues] = useState([]);
-  const [coloredCoreValues, setColoredCoreValues] = useState([]);
-  const [whatMakesUsDifferent, setWhatMakesUsDifferent] = useState([]);
-  const [whyChooseUsAboutPage, setWhyChooseUsAboutPage] = useState([]);
+  interface CoreValue {
+    title?: string;
+    description?: string;
+    gradient?: string;
+    [key: string]: unknown;
+  }
+  interface WhatMakesUsDifferentItem {
+    title?: string;
+    description?: string;
+    color?: string;
+    [key: string]: unknown;
+  }
+  const [coreValues, setCoreValues] = useState<CoreValue[]>([]);
+  const [coloredCoreValues, setColoredCoreValues] = useState<CoreValue[]>([]);
+  const [whatMakesUsDifferent, setWhatMakesUsDifferent] = useState<WhatMakesUsDifferentItem[]>([]);
+  interface WhyChooseUsFeature {
+    title?: string;
+    description?: string;
+    iconClass?: string;
+    [key: string]: unknown;
+  }
+  interface CTAItem {
+    title?: string;
+    description?: string;
+    [key: string]: unknown;
+  }
+  const [whyChooseUsAboutPage, setWhyChooseUsAboutPage] = useState<WhyChooseUsFeature[]>([]);
 
   const [email, setEmail] = useState("");
 
-  const [CTA, setCTA] = useState([]);
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
 
   const coreValueGradients = [
     'from-blue-500 to-blue-600',
@@ -131,14 +154,14 @@ const About = () => {
             ? data.projectInfo.whatMakesUsDifferent
             : [];
           setWhatMakesUsDifferent(
-            whatMakesUsDifferent.map((item, index) => ({
+            whatMakesUsDifferent.map((item: WhatMakesUsDifferentItem, index: number) => ({
               ...item,
               color: whatMakesUsDifferentColors[index % whatMakesUsDifferentColors.length],
             }))
           );
 
           setColoredCoreValues(
-            coreValues.map((value, index) => ({
+            coreValues.map((value: CoreValue, index: number) => ({
               ...value,
               gradient: coreValueGradients[index % coreValueGradients.length],
             }))
@@ -163,9 +186,9 @@ const About = () => {
 
           // CTA (choose one fallback based on your UI expects)
           // If CTA is a string in your UI:
-          setCTA(data.projectInfo.cta || "");
+          // setCTA(data.projectInfo.cta || "");
           // If CTA is an object in your UI, use this instead:
-          // setCTA(data.projectInfo.cta || {});
+          setCTA(Array.isArray(data.projectInfo.cta) ? data.projectInfo.cta : []);
         }
 
       } catch (error) {
@@ -179,7 +202,7 @@ const About = () => {
   console.log(missionLine, "missionLinemissionLinemissionLinemissionLinemissionLinemissionLinemissionLinemissionLine")
 
 
-  const getCTAContent = (index) => {
+  const getCTAContent = (index: number): CTAItem => {
     if (CTA.length === 0) {
       return { title: "What are you waiting for", description: "Contact us for our services" };
     }
@@ -647,7 +670,7 @@ const About = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-            {coloredCoreValues.map((value, index) => (
+            {coloredCoreValues.map((value: CoreValue, index: number) => (
               <div 
                 key={index} 
                 className="group relative"
@@ -680,7 +703,7 @@ const About = () => {
                       }}
                     >
                       <DynamicFAIcon 
-                        iconClass={value.iconClass || ''} 
+                        iconClass={String(value.iconClass || '')} 
                         className="w-7 h-7" 
                       />
                     </div>
@@ -812,7 +835,7 @@ const About = () => {
 
           {/* Differences Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-            {whatMakesUsDifferent.map((diff, index) => (
+            {whatMakesUsDifferent.map((diff: WhatMakesUsDifferentItem, index: number) => (
               <div 
                 key={index}
                 className="group relative bg-white border-2 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
@@ -843,7 +866,7 @@ const About = () => {
                       }}
                     >
                       <DynamicFAIcon 
-                        iconClass={diff.iconClass || ''} 
+                        iconClass={String(diff.iconClass || '')} 
                         className="w-7 h-7" 
                       />
                     </div>

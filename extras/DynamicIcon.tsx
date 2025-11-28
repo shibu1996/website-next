@@ -17,9 +17,10 @@ export default function DynamicIcon({ iconName, size = 24, ...props }: DynamicIc
   const cleanName = sanitize(iconName);
   // Cast only if it exists on lucide-react
   const IconComponent = (Icons as any)[cleanName] as React.ComponentType<any>;
+  const iconProps = { size, ...props } as any;
   if (!IconComponent) {
     // fallback
-    return <Icons.Star size={size} {...props} />;
+    return <Icons.Star {...iconProps} />;
   }
-  return <IconComponent size={size} {...props} />;
+  return <IconComponent {...iconProps} />;
 }

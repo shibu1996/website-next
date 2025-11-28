@@ -57,18 +57,51 @@ const About = () => {
   const [projectName, setProjectName] = useState("");
   const [missionLine, setMissionLine] = useState("");
   const [visionLine, setVisionLine] = useState("");
-  const [missionSubHeadings, setMissionSubHeadings] = useState([]);
-  const [visionSubHeadings, setVisionSubHeadings] = useState([]);
+  interface MissionVisionHeading {
+    [key: string]: unknown;
+  }
+
+  interface CoreValue {
+    title?: string;
+    description?: string;
+    iconClass?: string;
+    gradient?: string;
+    [key: string]: unknown;
+  }
+
+  interface WhatMakesUsDifferentItem {
+    title?: string;
+    description?: string;
+    iconClass?: string;
+    color?: string;
+    [key: string]: unknown;
+  }
+
+  interface WhyChooseUsFeature {
+    title?: string;
+    description?: string;
+    iconClass?: string;
+    [key: string]: unknown;
+  }
+
+  interface CTAItem {
+    title?: string;
+    description?: string;
+    [key: string]: unknown;
+  }
+
+  const [missionSubHeadings, setMissionSubHeadings] = useState<MissionVisionHeading[]>([]);
+  const [visionSubHeadings, setVisionSubHeadings] = useState<MissionVisionHeading[]>([]);
   const [coreValuesIntro, setCoreValuesIntro] = useState("");
   const [commitment, setCommitment] = useState("");
-  const [coreValues, setCoreValues] = useState([]);
-  const [coloredCoreValues, setColoredCoreValues] = useState([]);
-  const [whatMakesUsDifferent, setWhatMakesUsDifferent] = useState([]);
-  const [whyChooseUsAboutPage, setWhyChooseUsAboutPage] = useState([]);
+  const [coreValues, setCoreValues] = useState<CoreValue[]>([]);
+  const [coloredCoreValues, setColoredCoreValues] = useState<CoreValue[]>([]);
+  const [whatMakesUsDifferent, setWhatMakesUsDifferent] = useState<WhatMakesUsDifferentItem[]>([]);
+  const [whyChooseUsAboutPage, setWhyChooseUsAboutPage] = useState<WhyChooseUsFeature[]>([]);
 
   const [email, setEmail] = useState("");
 
-  const [CTA, setCTA] = useState([]);
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
 
   const coreValueGradients = [
     'from-blue-500 to-blue-600',
@@ -125,14 +158,14 @@ const About = () => {
             ? data.projectInfo.whatMakesUsDifferent
             : [];
           setWhatMakesUsDifferent(
-            whatMakesUsDifferent.map((item, index) => ({
+            whatMakesUsDifferent.map((item: WhatMakesUsDifferentItem, index: number) => ({
               ...item,
               color: whatMakesUsDifferentColors[index % whatMakesUsDifferentColors.length],
             }))
           );
 
           setColoredCoreValues(
-            coreValues.map((value, index) => ({
+            coreValues.map((value: CoreValue, index: number) => ({
               ...value,
               gradient: coreValueGradients[index % coreValueGradients.length],
             }))
@@ -155,11 +188,8 @@ const About = () => {
               : []
           );
 
-          // CTA (choose one fallback based on your UI expects)
-          // If CTA is a string in your UI:
-          setCTA(data.projectInfo.cta || "");
-          // If CTA is an object in your UI, use this instead:
-          // setCTA(data.projectInfo.cta || {});
+          // CTA (array of CTA items)
+          setCTA(Array.isArray(data.projectInfo.cta) ? data.projectInfo.cta : []);
         }
 
       } catch (error) {
@@ -173,11 +203,11 @@ const About = () => {
   console.log(missionLine, "missionLinemissionLinemissionLinemissionLinemissionLinemissionLinemissionLinemissionLine")
 
 
-  const getCTAContent = (index) => {
+  const getCTAContent = (index: number): CTAItem => {
     if (CTA.length === 0) {
       return { title: "What are you waiting for", description: "Contact us for our services" };
     }
-    return CTA[index] || CTA[0];
+    return CTA[index] || CTA[0] || { title: "What are you waiting for", description: "Contact us for our services" };
   };
 
   let title = `About ${projectCategory} Service - ${projectName}`
@@ -506,7 +536,7 @@ const About = () => {
                       <span 
                         className="text-xs sm:text-sm text-gray-800"
                       >
-                        {heading}
+                        {typeof heading === 'string' ? heading : (heading as any)?.text || (heading as any)?.title || (heading as any)?.heading || String(heading)}
                       </span>
                     </li>
                   ))}
@@ -574,7 +604,7 @@ const About = () => {
                       <span 
                         className="text-xs sm:text-sm text-gray-800"
                       >
-                        {heading}
+                        {typeof heading === 'string' ? heading : (heading as any)?.text || (heading as any)?.title || (heading as any)?.heading || String(heading)}
                       </span>
                     </li>
                   ))}

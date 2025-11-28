@@ -16,7 +16,7 @@ import ServicesHero from '../components/services/ServicesHero';
 import ServicesSection from '../components/ServicesSection';
 import WhyChooseUsSimple from '../components/WhyChooseUsSimple';
 import WhyChooseUsSection from '../components/WhyChooseUsSection';
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { useTheme } from '../contexts/ThemeContext';
 
 import GuaranteeSection from '../components/GuaranteeSection';
@@ -43,7 +43,12 @@ const Services = () => {
   const [backgroundImage, setBackgroundImage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const [CTA, setCTA] = useState([]);
+  interface CTAItem {
+    title?: string;
+    description?: string;
+    [key: string]: unknown;
+  }
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
   const [projectCategory, setProjectCategory] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectDescriptions, setProjectDescriptions] = useState([]);
@@ -156,7 +161,7 @@ const Services = () => {
     })();
   }, [projectId]);
 
-  const getCTAContent = (index) => {
+  const getCTAContent = (index: number): CTAItem => {
     if (CTA.length === 0) {
       return { title: "What are you waiting for?", description: "Contact us for our services" };
     }

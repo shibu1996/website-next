@@ -170,3 +170,9 @@ export const httpFile = axios.create({
 
 Agar kisi component me `import.meta.env` dikhe, to wo update karna hoga `process.env.NEXT_PUBLIC_*` me. Lekin API calls sabhi me properly configured hain.
 
+
+
+
+
+
+

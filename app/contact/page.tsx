@@ -24,6 +24,18 @@ import { Home } from 'lucide-react';
 import Loader from '@/themes/multicolor/components/Loader';
 import DynamicContactForm from '@/themes/multicolor/components/DynamicContactForm';
 
+interface CTAItem {
+  title?: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
+interface FAQItem {
+  question?: string;
+  answer?: string;
+  [key: string]: unknown;
+}
+
 const Contact = () => {
   const breadcrumbItems = [
     { label: "Contact" }
@@ -43,9 +55,9 @@ const Contact = () => {
   const [mainLocation, setMainLocation] = useState("");
   const [projectCategory, setProjectCategory] = useState("");
   const [image, setImage] = useState("");
-  const [CTA, setCTA] = useState([]);
+  const [CTA, setCTA] = useState<CTAItem[]>([]);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [projectFaqs, setprojectFaqs] = useState([]);
+  const [projectFaqs, setprojectFaqs] = useState<FAQItem[]>([]);
   const [showThankYou, setShowThankYou] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isFormExists, setIsFormExists] = useState(0);
@@ -106,7 +118,7 @@ const Contact = () => {
   }, [projectId]);
 
 
-  const getCTAContent = (index) => {
+  const getCTAContent = (index: number): CTAItem => {
     if (CTA.length === 0) {
       return { title: "What are you waiting for", description: "Contact us for our services" };
     }
@@ -335,8 +347,8 @@ const Contact = () => {
 
                     {/* Contact Form - Only Dynamic */}
                     {isFormExists === 1 && (
-                      <DynamicContactForm 
-                        projectId={projectId}
+                      <DynamicContactForm
+                        projectId={projectId || ''}
                         colors={colors}
                         onSuccess={() => setShowThankYou(true)}
                       />

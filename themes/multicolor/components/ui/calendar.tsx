@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+// @ts-ignore - react-day-picker may not be installed
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";

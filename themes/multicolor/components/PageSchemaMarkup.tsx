@@ -93,7 +93,7 @@ const PageSchemaMarkup = ({
         ? `${projectCategory} - ${areaName}`
         : `${projectName || 'Our Services'} - ${areaName}`,
       description: areaDesc,
-      telephone: phoneNumber || undefined,
+      telephone: phoneNumber || "",
       address: {
         streetAddress: mainLocation || "",
         addressLocality: areaName,          // the area being viewed

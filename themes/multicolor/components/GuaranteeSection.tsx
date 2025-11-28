@@ -6,6 +6,15 @@ import { useGuaranteeData } from '../../../hooks/useGuaranteeData.js';
 import DynamicFAIcon from '../../../extras/DynamicFAIcon';
 import { useTheme } from '../contexts/ThemeContext';
 
+interface GuaranteeItem {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  bgColor?: string;
+  [key: string]: unknown;
+}
+
 const staticHighlights = [
   { icon: Shield, text: 'Licensed & Insured Professionals' },
   { icon: Star, text: '10,000+ Satisfied Customers' },
@@ -32,7 +41,7 @@ const GuaranteeSection = () => {
   } = useGuaranteeData();
 
   // Keep all guarantee data intact
-  const coloredGuarantees = guarantees || [];
+  const coloredGuarantees = (guarantees || []) as GuaranteeItem[];
 
   if (isLoading) {
     return (

@@ -29,7 +29,7 @@ import { Phone, Star, StarHalf, Sparkles, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 import { httpFile } from "@/config";
-import humanizeString from "../../../extras/stringUtils.js";
+import humanizeString from "@/extras/stringUtils";
 import DynamicFAIcon from '../../../extras/DynamicFAIcon'; // make sure the path is correct
 import { removeDot } from "../../../extras/removeDot.js";
 import Link from 'next/link';
@@ -44,6 +44,25 @@ interface Testimonial {
   customer_image: string;
   customer_name: string;
   rating: number | string;
+}
+
+interface ProcessStep {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  color?: string;
+  number?: number;
+  stepName?: string;
+  serviceDescription?: string;
+  [key: string]: unknown;
+}
+
+interface GuaranteeItem {
+  title?: string;
+  description?: string;
+  iconClass?: string;
+  gradient?: string;
+  [key: string]: unknown;
 }
 
 const DrainCleaning = () => {
@@ -77,12 +96,12 @@ const DrainCleaning = () => {
   const router = useRouter();
   const pathname = usePathname();
   
-  const [projectOurProcess, setprojectOurProcess] = useState([]);
+  const [projectOurProcess, setprojectOurProcess] = useState<ProcessStep[]>([]);
   const [slugApiCompleted, setSlugApiCompleted] = useState(false); // Tracks slug API completion
-  const [serviceDetails, setServiceDetails] = useState(null);
+  const [serviceDetails, setServiceDetails] = useState<any>(null);
   const [serviceImage, setServiceImage] = useState("");
   const [ProjectBaseImage, setProjectBaseImage] = useState("");
-  const [stepProcess, setStepProcess] = useState([]);
+  const [stepProcess, setStepProcess] = useState<ProcessStep[]>([]);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
 
@@ -94,13 +113,13 @@ const DrainCleaning = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [reloadFlag, setReloadFlag] = useState(0);
   const [aboutService, setAboutService] = useState('');
-  const [subServices, setSubServices] = useState([]);
+  const [subServices, setSubServices] = useState<string[]>([]);
 
   const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
   // Note: Next.js doesn't support route state, use query params or localStorage if needed
   const [serviceId, setServiceId] = useState("");
   let displayServiceName = humanizeString(urlServiceName) || 'Residential Cleaning';
-  const [guarantees, setGuarantees] = useState([]);
+  const [guarantees, setGuarantees] = useState<GuaranteeItem[]>([]);
   const [guaranteeText, setGuaranteeText] = useState("");
   const [promiseLine, setPromiseLine] = useState("");
   const [projectCategory, setProjectCategory] = useState("");
@@ -108,13 +127,13 @@ const DrainCleaning = () => {
   const [locationName, setDisplayLocationName] = useState("");
   const [areaType, setAreaType] = useState("");
   const [areaId, setAreaId] = useState("");
-  const [cta1, setCta1] = useState(null);
-  const [cta2, setCta2] = useState(null);
-  const [cta3, setCta3] = useState(null);
-  const [cta4, setCta4] = useState(null);
-  const [projectWhyChooseUs, setprojectWhyChooseUs] = useState([]);
-  const [serviceGroups, setServiceGroups] = useState([]);  // Dynamic groups from API
-  const [projectFaqs, setprojectFaqs] = useState([]);
+  const [cta1, setCta1] = useState<any>(null);
+  const [cta2, setCta2] = useState<any>(null);
+  const [cta3, setCta3] = useState<any>(null);
+  const [cta4, setCta4] = useState<any>(null);
+  const [projectWhyChooseUs, setprojectWhyChooseUs] = useState<any[]>([]);
+  const [serviceGroups, setServiceGroups] = useState<any[]>([]);  // Dynamic groups from API
+  const [projectFaqs, setprojectFaqs] = useState<any[]>([]);
 
   const stepColors = [
     'bg-red-500',
@@ -251,7 +270,7 @@ const DrainCleaning = () => {
           setServiceImage(data.service.images?.[0]?.url || "");
           setProjectBaseImage(data.service.images?.[2]?.url || "");
           setStepProcess(
-            (data.service.steps_process || []).map((step, index) => ({
+            (data.service.steps_process || []).map((step: ProcessStep, index: number) => ({
               ...step,
               color: stepColors[index % stepColors.length],
               number: index + 1  // Also set number for display
@@ -271,7 +290,7 @@ const DrainCleaning = () => {
 
 
           setGuarantees(
-            (data.service.ourGuaranteeSection || []).map((item, index) => ({
+            (data.service.ourGuaranteeSection || []).map((item: GuaranteeItem, index: number) => ({
               ...item,
               gradient: gradients[index % gradients.length]
             }))
@@ -288,9 +307,14 @@ const DrainCleaning = () => {
 
           // Parse subServices from comma-separated string
           const subServicesArray = Array.isArray(data.service.subServices)
-            ? data.service.subServices.map(item => item.trim()).filter(Boolean) // If it's an array, trim and filter
+            ? (data.service.subServices as string[])
+                .map((item: string) => (typeof item === 'string' ? item.trim() : ''))
+                .filter(Boolean) // If it's an array, trim and filter
             : typeof data.service.subServices === 'string'
-              ? data.service.subServices.split(',').map(item => item.trim()).filter(Boolean) // If it's a string, split, trim, and filter
+              ? data.service.subServices
+                  .split(',')
+                  .map((item: string) => item.trim())
+                  .filter(Boolean) // If it's a string, split, trim, and filter
               : []; // Default to an empty array if it's neither a string nor an array
 
           setSubServices(subServicesArray);
@@ -962,7 +986,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
 
             {/* Services List - Dynamic */}
             <div className="p-6 space-y-3">
-              {dynamicItems.map((item, idx) => (
+              {dynamicItems.map((item: { iconClass?: string; title?: string }, idx: number) => (
                 <div key={idx} className="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group/item">
                   <div 
                     className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover/item:scale-110"

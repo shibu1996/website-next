@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Header from '@/themes/multicolor/components/Header';
 import Footer from '@/themes/multicolor/components/Footer';
 import SEOHead from '@/themes/multicolor/components/SEOHead';
@@ -34,18 +34,20 @@ const PrivacyPolicy = () => {
 
   const safeColors = colors || fallbackColors;
 
-  const pageSchema = generateWebPageSchema({
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const canonicalUrl = origin ? `${origin}/privacy-policy` : '/privacy-policy';
+  const pageSchema = useMemo(() => generateWebPageSchema({
     name: 'Privacy Policy - US Plumbers',
     description: 'Privacy Policy for US Plumbers - Learn how we collect, use, and protect your personal information.',
-    url: `${window.location.origin}/privacy-policy`
-  });
+    url: canonicalUrl
+  }), [canonicalUrl]);
 
   useSchemaMarkup(pageSchema, 'privacy-policy-page');
 
   // ---- Dynamic content logic start ----
   const [privacyContent, setPrivacyContent] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const projectId = getProjectId();
 
   useEffect(() => {
@@ -80,7 +82,7 @@ const PrivacyPolicy = () => {
       <SEOHead
         title="Privacy Policy - US Plumbers | Data Protection & Privacy"
         description="Privacy Policy for US Plumbers. Learn how we collect, use, and protect your personal information. We are committed to protecting your privacy."
-        canonical={`${window.location.origin}/privacy-policy`}
+        canonical={canonicalUrl}
       />
 
       <Header />

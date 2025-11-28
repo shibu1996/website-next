@@ -44,11 +44,11 @@ const Index = () => {
   const { seoData } = useSEO('/home');
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
-  const [projectCategory, setProjectCategory] = useState("");
-  const [CTA, setCTA] = useState([]);
-  const projectId = getProjectId();
   const pathname = usePathname();
   const router = useRouter();
+  
+  const [projectCategory, setProjectCategory] = useState("");
+  const [CTA, setCTA] = useState([]);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [backgroundImage, setBackgroundImage] = useState("");
   const [welcomeLine, setWelcomeLine] = useState('');
@@ -63,32 +63,39 @@ const Index = () => {
     'in', 'of', 'to', 'from', 'about', 'through', 'between', 'during', 'before', 'after'
   ];
 
-  useEffect(() => {
-    // Update projectId from URL if it changes
+  // Get projectId from URL params first, then fallback to getProjectId()
+  const getCurrentProjectId = () => {
     if (typeof window !== 'undefined') {
+      // Priority 1: URL search params (most immediate)
       const urlParams = new URLSearchParams(window.location.search);
-      const siteId = urlParams.get('siteId');
-      if (siteId && siteId !== projectId) {
-        localStorage.setItem('currentSiteId', siteId);
+      const siteIdFromUrl = urlParams.get('siteId');
+      if (siteIdFromUrl) {
+        localStorage.setItem('currentSiteId', siteIdFromUrl);
+        return siteIdFromUrl;
       }
     }
-  }, [pathname]);
+    // Priority 2: getProjectId() hook (checks localStorage and env)
+    return getProjectId();
+  };
 
   useEffect(() => {
     (async () => {
       try {
+        // Get projectId from URL or localStorage
+        const currentProjectId = getCurrentProjectId();
+        
         // Check if projectId is available
-        if (!projectId) {
+        if (!currentProjectId) {
           console.error('Project ID is not set! Check URL parameter ?siteId= or set NEXT_PUBLIC_PROJECT_ID in .env.local');
           setIsLoading(false);
           return;
         }
 
-        console.log('Fetching home page data...', { projectId, apiUrl: process.env.NEXT_PUBLIC_API_URL });
+        console.log('Home page: Fetching data with projectId:', currentProjectId);
 
         // Send plain object, let Axios handle Content-Type
         const { data } = await httpFile.post('/webapp/v1/my_site', {
-          projectId,
+          projectId: currentProjectId,
           pageType: 'home',
           reqFrom: 'Hero'
         });
@@ -143,7 +150,7 @@ const Index = () => {
             ? s.trim().replace(/^[,\"\s]+|[,\"\s]+$/g, '')
             : '';
 
-        const modifiedFeatures = (info.featuresSection || []).map((f, index) => ({
+        const modifiedFeatures = (info.featuresSection || []).map((f: any) => ({
           serialno: f.serialno,
           iconName: strip(f.iconName),
           title: strip(f.title),
@@ -163,7 +170,7 @@ const Index = () => {
         setIsLoading(false);
       }
     })();
-  }, [projectId]);
+  }, [pathname]);
 
   const getCTAContent = (index: number) => {
     if (CTA.length === 0) {
@@ -181,7 +188,6 @@ const Index = () => {
         <SEOHead
           title={seoData.meta_title}
           description={seoData.meta_description}
-          keywords={seoData.meta_keywords}
         />
         <WebVitals />
         <SchemaMarkup />
