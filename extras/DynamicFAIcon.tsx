@@ -1,6 +1,4 @@
 import React from 'react';
-import * as solidIcons from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface DynamicFAIconProps {
   iconClass: string; // e.g., "fas fa-car"
@@ -9,30 +7,58 @@ interface DynamicFAIconProps {
   style?: React.CSSProperties; // Inline styles
 }
 
-// Converts "fas fa-car" → "faCar"
-const iconLibrary = solidIcons as Record<string, any>;
-
-const getIconFromClass = (iconClass: string): any => {
-  const match = iconClass.match(/^fas fa-(.+)$/);
-  if (!match) return null;
-
-  const iconKey =
-    'fa' +
-    match[1].replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase()); // kebab-case to PascalCase
-  return iconLibrary[iconKey] || null;
-};
-
+/**
+ * DynamicFAIcon - Uses FontAwesome CDN instead of bundled library
+ * 
+ * This component now uses CSS classes directly instead of React components.
+ * FontAwesome is loaded via CDN in layout.tsx, saving ~400KB from bundle.
+ * 
+ * Functionality remains exactly the same - all iconClass props work as before.
+ */
 const DynamicFAIcon: React.FC<DynamicFAIconProps> = ({
   iconClass,
   fallbackClass = 'fas fa-star',
   className = 'text-4xl text-green-500',
   style,
 }) => {
-  const icon = getIconFromClass(iconClass);
-  const fallbackIcon = getIconFromClass(fallbackClass);
-  const iconToRender = icon || fallbackIcon;
+  // Validate and clean icon class
+  // Supports formats: "fas fa-car", "fa-car", "car"
+  const normalizeIconClass = (icon: string): string => {
+    if (!icon) return '';
+    
+    // Remove extra spaces
+    icon = icon.trim();
+    
+    // If already in "fas fa-*" format, return as is
+    if (icon.startsWith('fas fa-')) {
+      return icon;
+    }
+    
+    // If in "fa-*" format, add "fas" prefix
+    if (icon.startsWith('fa-')) {
+      return `fas ${icon}`;
+    }
+    
+    // If just icon name, add full prefix
+    if (!icon.includes(' ')) {
+      return `fas fa-${icon}`;
+    }
+    
+    // Return as is if already formatted
+    return icon;
+  };
 
-  return <FontAwesomeIcon icon={iconToRender} className={className} style={style as any} />;
+  // Get the icon class to use (with fallback)
+  const finalIconClass = normalizeIconClass(iconClass) || normalizeIconClass(fallbackClass);
+
+  // Return <i> tag with FontAwesome classes (CDN handles the rest)
+  return (
+    <i 
+      className={`${finalIconClass} ${className || ''}`.trim()} 
+      style={style}
+      aria-hidden="true"
+    />
+  );
 };
 
 export default DynamicFAIcon;

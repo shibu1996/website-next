@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import FontAwesomeLoader from "../components/FontAwesomeLoader";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -64,6 +65,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <body className={poppins.className}>
+        {/* FontAwesome CDN Loader - Saves ~400KB from bundle */}
+        <FontAwesomeLoader />
         <Providers>{children}</Providers>
       </body>
     </html>

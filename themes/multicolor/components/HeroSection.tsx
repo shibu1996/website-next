@@ -1,4 +1,6 @@
+'use client';
 
+import Image from 'next/image';
 import { Phone, Clock, Star, Shield, Award, CheckCircle, Sparkles, Zap, Users, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -8,16 +10,18 @@ const HeroSection = () => {
       id="home"
       className="relative min-h-[80vh] md:min-h-[85vh] flex items-center justify-center py-8 px-16 transition-all duration-300 overflow-hidden"
     >
-      {/* LCP Optimized Background Image */}
-      <img
-        src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-        alt="Emergency Plumbing Service"
-        className="absolute inset-0 w-full h-full object-cover"
-        loading="eager"
-        decoding="async"
-        width="2070"
-        height="1380"
-      />
+      {/* LCP Optimized Background Image - Next.js Image for better performance */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+          alt="Emergency Plumbing Service"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+          quality={85}
+        />
+      </div>
       {/* Background Overlay with Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/70 to-accent/80 animate-gradient-shift bg-[length:200%_200%]"></div>
       

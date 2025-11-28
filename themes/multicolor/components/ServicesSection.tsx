@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { httpFile } from '@/config';
@@ -112,17 +113,14 @@ const ServicesSection = ({ formattedLocationName = "" }: ServicesSectionProps) =
             >
               {/* Image Container */}
               <div className="relative h-48 overflow-hidden">
-                <img
+                <Image
                   src={service.images?.[0]?.url && service.images[0].url.trim() ? service.images[0].url : "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
                   alt={service.service_name || 'Service'}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  quality={85}
                   loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="192"
-                  onError={(e) => {
-                    e.currentTarget.src = "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg";
-                  }}
                 />
                 
                 {/* Gradient Overlay */}

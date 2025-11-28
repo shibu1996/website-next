@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import DynamicIcon from '../../../extras/DynamicIcon';
 // src/themes/multicolor/components/CleaningAboutUs.tsx
 import React, { useEffect, useState } from 'react';
@@ -30,12 +31,17 @@ const sanitize = (raw: any): string =>
   const [isLoading, setIsLoading] = useState(true);
 
   // Read projectId from query or localStorage
-  const urlParams = new URLSearchParams(window.location.search);
-  const site = urlParams.get('siteId');
-  if (site && localStorage.getItem('currentSiteId') !== site) {
-    localStorage.setItem('currentSiteId', site);
-  }
   const projectId = getProjectId();
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const site = urlParams.get('siteId');
+      if (site && localStorage.getItem('currentSiteId') !== site) {
+        localStorage.setItem('currentSiteId', site);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -110,12 +116,16 @@ const sanitize = (raw: any): string =>
           <div className="lg:col-span-5">
             <div className="relative">
               {/* Main Image */}
-              <div className="relative rounded-3xl overflow-hidden">
+              <div className="relative rounded-3xl overflow-hidden h-[500px]">
                 {aboutImage ? (
-                  <img 
+                  <Image 
                     src={aboutImage}
                     alt="Professional service"
-                    className="w-full h-[500px] object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                    quality={85}
+                    loading="lazy"
                   />
                 ) : (
                   <div 
