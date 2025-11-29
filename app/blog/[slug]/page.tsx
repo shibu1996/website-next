@@ -13,7 +13,6 @@ import Comments from "@/components/blog/Comments";
 import AuthorComponent from "@/components/blog/AuthorComponent";
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
 import { BookOpen } from 'lucide-react';
-import Loader from '@/themes/multicolor/components/Loader';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://apis.smartlybuild.dev";
 const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID || "";
@@ -102,9 +101,6 @@ const BlogPage: React.FC = () => {
     fetchBlog();
   }, [slug, router]);
 
-  if (loading) {
-    return <Loader message="Loading Blog..." />;
-  }
 
   const breadcrumbItems = [{ label: "Blogs" }];
 

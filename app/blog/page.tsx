@@ -198,7 +198,7 @@ const Blogs = () => {
                 >
                   <BookOpen className="w-10 h-10 text-white" />
                 </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style={{ color: '#ffffff' }}>
                   Our Blog & Articles
                 </h1>
                 <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">

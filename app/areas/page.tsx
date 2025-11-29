@@ -23,7 +23,6 @@ import { getProjectId } from '@/hooks/getProjectId';
 import { Card, CardContent } from '@/components/ui/card';
 import DynamicFAIcon from '@/extras/DynamicFAIcon';
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
-import Loader from '@/themes/multicolor/components/Loader';
 
 interface AreaLocation {
   slug?: string;
@@ -188,9 +187,6 @@ const Areas = () => {
   };
 
 
-  if (isLoading) {
-    return <Loader message="Loading Service Areas..." />;
-  }
 
   return (
     <div className="min-h-screen font-poppins">

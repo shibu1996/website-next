@@ -238,6 +238,36 @@ All colors MUST be HSL.
     margin-bottom: 0.5rem;
   }
   
+  /* Breadcrumb spacing - equal top and bottom */
+  /* Override default li spacing for breadcrumbs - remove bottom margin */
+  nav ul li,
+  nav ol li {
+    line-height: 1 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* Breadcrumb specific - remove extra bottom spacing from all child elements */
+  nav ul li *,
+  nav ol li * {
+    line-height: 1 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Ensure flex items are aligned */
+  nav ul li a,
+  nav ul li span,
+  nav ol li a,
+  nav ol li span,
+  nav ul li button,
+  nav ol li button {
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  
   .theme-default {
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }

@@ -85,13 +85,9 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <div className="mb-6">
               <h3 
-                className="text-2xl font-bold mb-4 text-white"
+                className="text-2xl font-bold mb-4"
                 style={{
-                  backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  color: 'transparent',
-                  WebkitTextFillColor: 'transparent'
+                  color: '#ffffff'
                 }}
               >
                 {projectName}
@@ -136,7 +132,7 @@ const Footer = () => {
 
           {/* Our Services */}
           <div>
-            <h4 className="font-bold mb-6 text-white">Our Services</h4>
+            <h4 className="font-bold mb-6" style={{ color: '#ffffff' }}>Our Services</h4>
             <ul className="space-y-3">
               {services.slice(0, 6).map((service, index) => (
                 <li key={index}>
@@ -157,7 +153,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-bold mb-6 text-white">Quick Links</h4>
+            <h4 className="font-bold mb-6" style={{ color: '#ffffff' }}>Quick Links</h4>
             <ul className="space-y-3">
               <li>
                 <Link 
@@ -224,7 +220,7 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h4 className="font-bold mb-6 text-white">Contact Info</h4>
+            <h4 className="font-bold mb-6" style={{ color: '#ffffff' }}>Contact Info</h4>
             <div className="space-y-4">
               {aboutUs.phone && (
                 <div className="flex items-start gap-3">

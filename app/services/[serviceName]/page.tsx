@@ -38,7 +38,6 @@ import { useSEO } from '../../../hooks/useSEO';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
-import Loader from '@/themes/multicolor/components/Loader';
 interface Testimonial {
   review_text: string;
   customer_image: string;
@@ -415,10 +414,6 @@ const coloredSteps = stepProcess.map((step, i) => ({
 }));
 
 
-  // Loading state
-  if (isLoading) {
-    return <Loader message="Loading Service Details..." />;
-  }
 
   return (
     <div className="min-h-screen font-poppins">

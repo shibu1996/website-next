@@ -21,7 +21,6 @@ import { generateFAQSchema, generateReviewSchema, generateServicesSchema } from 
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
-import Loader from '@/themes/multicolor/components/Loader';
 import DynamicContactForm from '@/themes/multicolor/components/DynamicContactForm';
 
 interface CTAItem {
@@ -128,9 +127,6 @@ const Contact = () => {
 
   const faqSchema = generateFAQSchema(projectFaqs);
 
-  if (isLoading) {
-    return <Loader message="Loading Contact Page..." />;
-  }
 
   return (
     <div className="min-h-screen font-poppins">

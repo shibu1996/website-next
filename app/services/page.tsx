@@ -29,7 +29,6 @@ import PageSchemaMarkup from '@/themes/multicolor/components/PageSchemaMarkup';
 import ProcessSchemaMarkup from '@/themes/multicolor/components/ProcessSchemaMarkup';
 import SEOHead from '@/themes/multicolor/components/SEOHead';
 import { httpFile } from "@/config";
-import Loader from '@/themes/multicolor/components/Loader';
 
 interface CTAItem {
   title?: string;
@@ -173,9 +172,6 @@ const Services = () => {
 
   console.log(formattedLocationName, "formattedLocationName in services page");
 
-  if (isLoading) {
-    return <Loader message="Loading Services..." />;
-  }
 
   return (
     <div className="min-h-screen font-poppins">

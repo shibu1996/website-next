@@ -23,7 +23,6 @@ import { httpFile } from "@/config";
 import { getProjectId } from '@/hooks/getProjectId';
 import DynamicFAIcon from '@/extras/DynamicFAIcon';
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
-import Loader from '@/themes/multicolor/components/Loader';
 
 const About = () => {
   const { getThemeColors } = useTheme();
@@ -212,10 +211,6 @@ const About = () => {
 
   let title = `About ${projectCategory} Service - ${projectName}`
 
-  // Simple loading state
-  if (!projectName && !aboutHeroText) {
-    return <Loader message="Loading About Page..." />;
-  }
 
   return (
     <div className="min-h-screen font-poppins">

@@ -8,7 +8,6 @@ import { useSEO } from '../../../hooks/useSEO';
 import { httpFile } from "@/config";
 import { getProjectId } from '../../../hooks/getProjectId';
 import { generateFAQSchema, generateReviewSchema, generateServicesSchema } from "../../../hooks/schemaMarkup"
-import Loader from '@/themes/multicolor/components/Loader';
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import DynamicFAIcon from '../../../extras/DynamicFAIcon';
@@ -893,9 +892,6 @@ const AreaDetail = () => {
     borderColor: step.borderColor || colorSets[i % colorSets.length].borderColor,
     number: (i + 1).toString()
   }));
-  if (isHeroLoading || isLoading) {
-    return <Loader message="Loading..." variant="elegant" size="lg" />;
-  }
 
   // console.log(countryDescription,"countryDescriptioncountryDescriptioncountryDescriptioncountryDescription")
 

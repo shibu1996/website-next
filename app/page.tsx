@@ -17,7 +17,6 @@ import { httpFile } from "@/config";
 import { useSEO } from '@/hooks/useSEO';
 import DynamicIcon from '@/extras/DynamicIcon';
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
-import Loader from '@/themes/multicolor/components/Loader';
 import { getProjectId } from '@/hooks/getProjectId';
 
 // Lazy load heavy components
@@ -178,10 +177,6 @@ const Index = () => {
     }
     return CTA[index] || CTA[0];
   };
-
-  if (isLoading) {
-    return <Loader message="Loading Home Page..." variant="elegant" size="lg" />;
-  }
 
   return (
     <div className="min-h-screen font-poppins">
