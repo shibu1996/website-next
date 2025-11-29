@@ -233,90 +233,122 @@ const Index = () => {
             <div className="max-w-5xl mx-auto">
               <div className="text-center lg:text-left space-y-6 relative z-20">
                 
-                {/* Badge */}
-                <div 
-                  className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
-                  style={{
-                    backgroundColor: `${colors.primaryButton.bg}20`,
-                    border: `1px solid ${colors.primaryButton.bg}40`
-                  }}
-                >
-                  <div 
-                    className="w-2 h-2 rounded-full animate-pulse"
-                    style={{ backgroundColor: colors.primaryButton.bg }}
-                  ></div>
-                  <span 
-                    className="font-semibold text-sm tracking-wide"
-                    style={{ color: colors.heading }}
-                  >
-                    {projectSlogan}
-                  </span>
-                </div>
-
-                {/* Main Heading */}
-                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
-                  <span style={{ color: colors.heading }}>
-                    {heroHeadingPart1}
-                  </span>{' '}
-                  <span 
-                    className="inline-block"
-                    style={{
-                      backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      color: 'transparent',
-                      WebkitTextFillColor: 'transparent'
-                    }}
-                  >
-                    {heroHeadingPart2}
-                  </span>
-                </h1>
-
-                {/* Subheading */}
-                <p 
-                  className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
-                  style={{ color: colors.description }}
-                >
-                  {welcomeLine}
-                </p>
-
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
-                  
-                  {/* Call Button */}
-                  <a
-                    href={`tel:${phoneNumber}`}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-base transition-all duration-300"
-                    style={{
-                      backgroundColor: colors.primaryButton.bg,
-                      color: colors.primaryButton.text
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primaryButton.hover}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primaryButton.bg}
-                  >
-                    <Phone className="w-5 h-5" />
-                    <div className="text-left">
-                      <div className="text-xs opacity-90">Call Now</div>
-                      <div className="text-sm font-bold">{phoneNumber}</div>
+                {isLoading ? (
+                  /* Skeleton Loading */
+                  <>
+                    {/* Badge Skeleton */}
+                    <div className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5 animate-pulse">
+                      <div className="w-2 h-2 rounded-full bg-white/50"></div>
+                      <div className="h-4 w-32 bg-white/50 rounded"></div>
                     </div>
-                  </a>
 
-                  {/* Get Estimate Button */}
-                  <button
-                    onClick={() => router.push('/contact')}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-base transition-all duration-300"
-                    style={{
-                      backgroundColor: colors.secondaryButton.bg,
-                      color: colors.secondaryButton.text,
-                      border: `2px solid ${colors.secondaryButton.border}`
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondaryButton.hover}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondaryButton.bg}
-                  >
-                    <Wrench className="w-5 h-5" />
-                    <span>Get Free Estimate</span>
-                  </button>
-                </div>
+                    {/* Heading Skeleton */}
+                    <div className="space-y-2">
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-full max-w-2xl bg-white/50 rounded animate-pulse"></div>
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-3/4 max-w-xl bg-white/40 rounded animate-pulse"></div>
+                    </div>
+
+                    {/* Subheading Skeleton */}
+                    <div className="space-y-2 max-w-3xl mx-auto lg:mx-0">
+                      <div className="h-4 w-full bg-white/50 rounded animate-pulse"></div>
+                      <div className="h-4 w-5/6 bg-white/40 rounded animate-pulse"></div>
+                      <div className="h-4 w-4/6 bg-white/30 rounded animate-pulse"></div>
+                    </div>
+
+                    {/* CTA Buttons Skeleton */}
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
+                      <div className="h-12 w-40 bg-white/50 rounded-xl animate-pulse"></div>
+                      <div className="h-12 w-44 bg-white/40 rounded-xl animate-pulse"></div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Badge */}
+                    <div 
+                      className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
+                      style={{
+                        backgroundColor: `${colors.primaryButton.bg}20`,
+                        border: `1px solid ${colors.primaryButton.bg}40`
+                      }}
+                    >
+                      <div 
+                        className="w-2 h-2 rounded-full animate-pulse"
+                        style={{ backgroundColor: colors.primaryButton.bg }}
+                      ></div>
+                      <span 
+                        className="font-semibold text-sm tracking-wide"
+                        style={{ color: colors.heading }}
+                      >
+                        {projectSlogan}
+                      </span>
+                    </div>
+
+                    {/* Main Heading */}
+                    <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
+                      <span style={{ color: colors.heading }}>
+                        {heroHeadingPart1}
+                      </span>{' '}
+                      <span 
+                        className="inline-block"
+                        style={{
+                          backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
+                          WebkitBackgroundClip: 'text',
+                          backgroundClip: 'text',
+                          color: 'transparent',
+                          WebkitTextFillColor: 'transparent'
+                        }}
+                      >
+                        {heroHeadingPart2}
+                      </span>
+                    </h1>
+
+                    {/* Subheading */}
+                    <p 
+                      className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
+                      style={{ color: colors.description }}
+                    >
+                      {welcomeLine}
+                    </p>
+
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
+                      
+                      {/* Call Button */}
+                      <a
+                        href={`tel:${phoneNumber}`}
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-base transition-all duration-300"
+                        style={{
+                          backgroundColor: colors.primaryButton.bg,
+                          color: colors.primaryButton.text
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primaryButton.hover}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.primaryButton.bg}
+                      >
+                        <Phone className="w-5 h-5" />
+                        <div className="text-left">
+                          <div className="text-xs opacity-90">Call Now</div>
+                          <div className="text-sm font-bold">{phoneNumber}</div>
+                        </div>
+                      </a>
+
+                      {/* Get Estimate Button */}
+                      <button
+                        onClick={() => router.push('/contact')}
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-base transition-all duration-300"
+                        style={{
+                          backgroundColor: colors.secondaryButton.bg,
+                          color: colors.secondaryButton.text,
+                          border: `2px solid ${colors.secondaryButton.border}`
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondaryButton.hover}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondaryButton.bg}
+                      >
+                        <Wrench className="w-5 h-5" />
+                        <span>Get Free Estimate</span>
+                      </button>
+                    </div>
+                  </>
+                )}
 
                 {/* Trust Indicators */}
                 <div 

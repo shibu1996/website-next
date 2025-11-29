@@ -209,49 +209,81 @@ const Contact = () => {
 
                 {/* Left Side - Content */}
                 <div className="text-center lg:text-left space-y-8 relative z-20">
-                  {/* Badge */}
-                  <div className="inline-block">
-                    <span
-                      className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-4 py-2 text-xs font-semibold"
-                      style={{
-                        color: colors.heading,
-                        backgroundColor: `${colors.primaryButton.bg}15`
-                      }}
-                    >
-                      <Star className="w-3 h-3" />
-                      Contact Us
-                    </span>
-                  </div>
+                  {isLoading ? (
+                    /* Skeleton Loading */
+                    <>
+                      {/* Badge Skeleton */}
+                      <div className="inline-block">
+                        <div className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-4 py-2 animate-pulse">
+                          <div className="w-3 h-3 bg-white/50 rounded"></div>
+                          <div className="h-4 w-24 bg-white/50 rounded"></div>
+                        </div>
+                      </div>
 
-                  {/* Main Heading */}
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-[1.1] tracking-tight">
-                    <span style={{ color: colors.heading }}>
-                      Get In Touch
-                    </span>{' '}
-                    <span
-                      className="inline-block"
-                      style={{
-                        backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        color: 'transparent',
-                        WebkitTextFillColor: 'transparent'
-                      }}
-                    >
-                      Today
-                    </span>
-                  </h1>
+                      {/* Heading Skeleton */}
+                      <div className="space-y-2">
+                        <div className="h-10 sm:h-12 md:h-14 lg:h-16 w-full max-w-xl bg-white/50 rounded animate-pulse"></div>
+                        <div className="h-10 sm:h-12 md:h-14 lg:h-16 w-3/4 max-w-lg bg-white/40 rounded animate-pulse"></div>
+                      </div>
 
-                  {/* Subheading */}
-                  <p
-                    className="text-sm sm:text-base md:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed"
-                    style={{ color: colors.description }}
-                  >
-                    Ready for professional {projectCategory}? Contact us today for a free quote and same-day booking.
-                  </p>
+                      {/* Subheading Skeleton */}
+                      <div className="space-y-2 max-w-2xl mx-auto lg:mx-0">
+                        <div className="h-4 w-full bg-white/50 rounded animate-pulse"></div>
+                        <div className="h-4 w-5/6 bg-white/40 rounded animate-pulse"></div>
+                        <div className="h-4 w-4/6 bg-white/30 rounded animate-pulse"></div>
+                      </div>
 
-                  {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
+                      {/* CTA Buttons Skeleton */}
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
+                        <div className="h-12 w-40 bg-white/50 rounded-xl animate-pulse"></div>
+                        <div className="h-12 w-44 bg-white/40 rounded-xl animate-pulse"></div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Badge */}
+                      <div className="inline-block">
+                        <span
+                          className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-4 py-2 text-xs font-semibold"
+                          style={{
+                            color: colors.heading,
+                            backgroundColor: `${colors.primaryButton.bg}15`
+                          }}
+                        >
+                          <Star className="w-3 h-3" />
+                          Contact Us
+                        </span>
+                      </div>
+
+                      {/* Main Heading */}
+                      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-[1.1] tracking-tight">
+                        <span style={{ color: colors.heading }}>
+                          Get In Touch
+                        </span>{' '}
+                        <span
+                          className="inline-block"
+                          style={{
+                            backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
+                            WebkitBackgroundClip: 'text',
+                            backgroundClip: 'text',
+                            color: 'transparent',
+                            WebkitTextFillColor: 'transparent'
+                          }}
+                        >
+                          Today
+                        </span>
+                      </h1>
+
+                      {/* Subheading */}
+                      <p
+                        className="text-sm sm:text-base md:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed"
+                        style={{ color: colors.description }}
+                      >
+                        Ready for professional {projectCategory}? Contact us today for a free quote and same-day booking.
+                      </p>
+
+                      {/* CTA Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                     {/* Call Button */}
                     <a
                       href={`tel:${phoneNumber}`}
@@ -286,6 +318,8 @@ const Contact = () => {
                       <span>Get Free Estimate</span>
                     </button>
                   </div>
+                    </>
+                  )}
 
                   {/* Contact Info Cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-6">

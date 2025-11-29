@@ -101,6 +101,7 @@ const About = () => {
   const [email, setEmail] = useState("");
 
   const [CTA, setCTA] = useState<CTAItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const coreValueGradients = [
     'from-blue-500 to-blue-600',
@@ -193,6 +194,8 @@ const About = () => {
 
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -262,49 +265,81 @@ const About = () => {
             <div className="pt-20 sm:pt-24 lg:pt-28">
               <div className="text-center lg:text-left space-y-6 relative z-20">
 
-                {/* Badge */}
-                <div className="inline-block mb-4">
-                  <span
-                    className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
-                    style={{
-                      color: safeColors.heading,
-                      backgroundColor: `${safeColors.primaryButton.bg}15`
-                    }}
-                  >
-                    <Star className="w-4 h-4" />
+                {isLoading ? (
+                  /* Skeleton Loading */
+                  <>
+                    {/* Badge Skeleton */}
+                    <div className="inline-block mb-4">
+                      <div className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5 animate-pulse">
+                        <div className="w-4 h-4 bg-gray-300 rounded"></div>
+                        <div className="h-4 w-48 bg-gray-300 rounded"></div>
+                      </div>
+                    </div>
+
+                    {/* Heading Skeleton */}
+                    <div className="space-y-2">
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-full max-w-2xl bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-3/4 max-w-xl bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+
+                    {/* Subheading Skeleton */}
+                    <div className="space-y-2 max-w-3xl mx-auto lg:mx-0">
+                      <div className="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-5/6 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-4/6 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+
+                    {/* CTA Buttons Skeleton */}
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
+                      <div className="h-12 w-40 bg-gray-200 rounded-xl animate-pulse"></div>
+                      <div className="h-12 w-44 bg-gray-200 rounded-xl animate-pulse"></div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Badge */}
+                    <div className="inline-block mb-4">
+                      <span
+                        className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
+                        style={{
+                          color: safeColors.heading,
+                          backgroundColor: `${safeColors.primaryButton.bg}15`
+                        }}
+                      >
+                        <Star className="w-4 h-4" />
               Your Trusted {projectCategory} Partners
-                  </span>
+                      </span>
             </div>
 
-                {/* Main Heading */}
-                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
-                  <span style={{ color: safeColors.heading }}>
+                    {/* Main Heading */}
+                    <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
+                      <span style={{ color: safeColors.heading }}>
                 About
-                  </span>{' '}
-                  <span
-                    className="inline-block"
-                    style={{
-                      backgroundImage: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`,
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      color: 'transparent',
-                      WebkitTextFillColor: 'transparent'
-                    }}
-                  >
-                    {projectName}
-                  </span>
+                      </span>{' '}
+                      <span
+                        className="inline-block"
+                        style={{
+                          backgroundImage: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`,
+                          WebkitBackgroundClip: 'text',
+                          backgroundClip: 'text',
+                          color: 'transparent',
+                          WebkitTextFillColor: 'transparent'
+                        }}
+                      >
+                        {projectName}
+                      </span>
               </h1>
 
-                {/* Subheading */}
-                <p
-                  className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
-                  style={{ color: safeColors.description }}
-                >
+                    {/* Subheading */}
+                    <p
+                      className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
+                      style={{ color: safeColors.description }}
+                    >
               {aboutHeroText}
             </p>
 
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
 
                   {/* Call Button */}
                   <a
@@ -345,6 +380,8 @@ const About = () => {
                     <span>Learn Our Story</span>
                   </button>
                 </div>
+                  </>
+                )}
 
                 {/* Trust Indicators */}
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 pt-6">

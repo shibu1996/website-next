@@ -190,20 +190,34 @@ const Blogs = () => {
           <div className="container mx-auto px-4 sm:px-8 lg:px-16 text-center relative z-10">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
-                <div 
-                  className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl"
-                  style={{
-                    background: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`
-                  }}
-                >
-                  <BookOpen className="w-10 h-10 text-white" />
-                </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style={{ color: '#ffffff' }}>
-                  Our Blog & Articles
-                </h1>
-                <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
-                  Discover insights, tips, and expert advice from our team of professionals
-                </p>
+                {loading ? (
+                  /* Skeleton Loading */
+                  <>
+                    <div className="w-20 h-20 rounded-full mx-auto mb-6 bg-white/50 animate-pulse"></div>
+                    <div className="h-10 sm:h-12 lg:h-14 w-full max-w-2xl bg-white/50 rounded animate-pulse mx-auto mb-6"></div>
+                    <div className="space-y-2 max-w-3xl mx-auto">
+                      <div className="h-5 w-full bg-white/50 rounded animate-pulse"></div>
+                      <div className="h-5 w-5/6 bg-white/40 rounded animate-pulse mx-auto"></div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div 
+                      className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl"
+                      style={{
+                        background: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`
+                      }}
+                    >
+                      <BookOpen className="w-10 h-10 text-white" />
+                    </div>
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6" style={{ color: '#ffffff' }}>
+                      Our Blog & Articles
+                    </h1>
+                    <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
+                      Discover insights, tips, and expert advice from our team of professionals
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>

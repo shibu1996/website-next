@@ -998,52 +998,84 @@ const AreaDetail = () => {
               <div className="max-w-5xl mx-auto pt-16 sm:pt-20 lg:pt-24">
                 <div className="text-center lg:text-left space-y-6 relative z-20">
 
-                  {/* Badge */}
-                  <div className="inline-block mb-4">
-                    <span
-                      className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
-                      style={{
-                        color: colors.heading,
-                        backgroundColor: `${colors.primaryButton.bg}15`
-                      }}
-                    >
-                      <Star className="w-4 h-4" />
-                      {heroHeading}
-                    </span>
-                  </div>
+                  {isHeroLoading || isLoading ? (
+                    /* Skeleton Loading */
+                    <>
+                      {/* Badge Skeleton */}
+                      <div className="inline-block mb-4">
+                        <div className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5 animate-pulse">
+                          <div className="w-4 h-4 bg-white/50 rounded"></div>
+                          <div className="h-4 w-48 bg-white/50 rounded"></div>
+                        </div>
+                      </div>
 
-                  {/* Main Heading */}
-                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
-                    <span style={{ color: colors.heading }}>
-                      {cityName}
-                    </span>{' '}
-                    <span
-                      className="inline-block"
-                      style={{
-                        backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        color: 'transparent',
-                        WebkitTextFillColor: 'transparent'
-                      }}
-                    >
-                      {projectCategory}
-                    </span>{' '}
-                    <span style={{ color: colors.heading }}>
-                      Services
-                    </span>
-                  </h1>
+                      {/* Heading Skeleton */}
+                      <div className="space-y-2">
+                        <div className="h-7 sm:h-8 md:h-10 lg:h-12 xl:h-14 w-full max-w-2xl bg-white/50 rounded animate-pulse"></div>
+                        <div className="h-7 sm:h-8 md:h-10 lg:h-12 xl:h-14 w-3/4 max-w-xl bg-white/40 rounded animate-pulse"></div>
+                      </div>
 
-                  {/* Subheading */}
-                  <p
-                    className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
-                    style={{ color: colors.description }}
-                  >
-                    {getPageDescription()}
-                  </p>
+                      {/* Subheading Skeleton */}
+                      <div className="space-y-2 max-w-3xl mx-auto lg:mx-0">
+                        <div className="h-4 w-full bg-white/50 rounded animate-pulse"></div>
+                        <div className="h-4 w-5/6 bg-white/40 rounded animate-pulse"></div>
+                        <div className="h-4 w-4/6 bg-white/30 rounded animate-pulse"></div>
+                      </div>
 
-                  {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
+                      {/* CTA Buttons Skeleton */}
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
+                        <div className="h-12 w-40 bg-white/50 rounded-xl animate-pulse"></div>
+                        <div className="h-12 w-44 bg-white/40 rounded-xl animate-pulse"></div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Badge */}
+                      <div className="inline-block mb-4">
+                        <span
+                          className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
+                          style={{
+                            color: colors.heading,
+                            backgroundColor: `${colors.primaryButton.bg}15`
+                          }}
+                        >
+                          <Star className="w-4 h-4" />
+                          {heroHeading}
+                        </span>
+                      </div>
+
+                      {/* Main Heading */}
+                      <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
+                        <span style={{ color: colors.heading }}>
+                          {cityName}
+                        </span>{' '}
+                        <span
+                          className="inline-block"
+                          style={{
+                            backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
+                            WebkitBackgroundClip: 'text',
+                            backgroundClip: 'text',
+                            color: 'transparent',
+                            WebkitTextFillColor: 'transparent'
+                          }}
+                        >
+                          {projectCategory}
+                        </span>{' '}
+                        <span style={{ color: colors.heading }}>
+                          Services
+                        </span>
+                      </h1>
+
+                      {/* Subheading */}
+                      <p
+                        className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
+                        style={{ color: colors.description }}
+                      >
+                        {getPageDescription()}
+                      </p>
+
+                      {/* CTA Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
 
                     {/* Call Button */}
                     <a
@@ -1079,6 +1111,8 @@ const AreaDetail = () => {
                       <span>Get Free Estimate</span>
                     </button>
                   </div>
+                    </>
+                  )}
 
                   {/* Trust Indicators */}
                   <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 pt-6">

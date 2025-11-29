@@ -93,20 +93,35 @@ const sanitize = (raw: any): string =>
         
         {/* Section Title */}
         <div className="text-center mb-12">
-          <div className="inline-block mb-4">
-            <span 
-              className="text-sm font-bold uppercase tracking-wider px-4 py-2 rounded-full"
-              style={{ 
-                color: colors.primaryButton.bg,
-                backgroundColor: `${colors.primaryButton.bg}15`
-              }}
-            >
-              About Us
-            </span>
-          </div>
-          <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
-            Professional <span style={{ color: colors.primaryButton.bg }}>{projectCategory}</span> You Can Trust
-          </h2>
+          {isLoading ? (
+            /* Skeleton Loading */
+            <>
+              <div className="inline-block mb-4">
+                <div className="h-6 w-24 bg-gray-200 rounded-full animate-pulse mx-auto"></div>
+              </div>
+              <div className="space-y-2 max-w-3xl mx-auto">
+                <div className="h-8 w-3/4 bg-gray-200 rounded animate-pulse mx-auto"></div>
+                <div className="h-8 w-1/2 bg-gray-200 rounded animate-pulse mx-auto"></div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="inline-block mb-4">
+                <span 
+                  className="text-sm font-bold uppercase tracking-wider px-4 py-2 rounded-full"
+                  style={{ 
+                    color: colors.primaryButton.bg,
+                    backgroundColor: `${colors.primaryButton.bg}15`
+                  }}
+                >
+                  About Us
+                </span>
+              </div>
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
+                Professional <span style={{ color: colors.primaryButton.bg }}>{projectCategory}</span> You Can Trust
+              </h2>
+            </>
+          )}
         </div>
 
         {/* Main Content */}
@@ -117,7 +132,9 @@ const sanitize = (raw: any): string =>
             <div className="relative">
               {/* Main Image */}
               <div className="relative rounded-3xl overflow-hidden h-[500px]">
-                {aboutImage ? (
+                {isLoading ? (
+                  <div className="w-full h-full bg-gray-200 animate-pulse rounded-3xl"></div>
+                ) : aboutImage ? (
                   <Image 
                     src={aboutImage}
                     alt="Professional service"
@@ -180,26 +197,57 @@ const sanitize = (raw: any): string =>
           {/* Right: Content - 7 columns */}
           <div className="lg:col-span-7 space-y-10">
             
-            {/* Description */}
-            <div className="space-y-6">
-              <p className="text-gray-700 leading-relaxed">
-                {firstPart}
-              </p>
-              <p className="text-gray-700 leading-relaxed">
-                {secondPart}
-              </p>
-            </div>
+            {isLoading ? (
+              /* Skeleton Loading for Content */
+              <>
+                {/* Description Skeleton */}
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <div className="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 w-5/6 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 w-4/5 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                </div>
 
-            {/* Stats Section */}
-            <div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                {stats.map((stat, index) => (
-                  <div 
-                    key={index}
-                    className="group"
-                  >
-                    <div className="flex flex-col items-center text-center space-y-4">
-                      {/* Icon Circle */}
+                {/* Stats Skeleton */}
+                <div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {[1, 2, 3, 4].map((index) => (
+                      <div key={index} className="flex flex-col items-center text-center space-y-4">
+                        <div className="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+                        <div className="h-6 w-16 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Description */}
+                <div className="space-y-6">
+                  <p className="text-gray-700 leading-relaxed">
+                    {firstPart}
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    {secondPart}
+                  </p>
+                </div>
+
+                {/* Stats Section */}
+                <div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {stats.map((stat, index) => (
+                      <div 
+                        key={index}
+                        className="group"
+                      >
+                        <div className="flex flex-col items-center text-center space-y-4">
+                          {/* Icon Circle */}
                       {stat.iconName && (
                         <div 
                           className="w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
@@ -232,10 +280,11 @@ const sanitize = (raw: any): string =>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
