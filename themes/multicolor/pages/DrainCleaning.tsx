@@ -410,7 +410,7 @@ const DrainCleaning = () => {
     : cleaned;
 
 
-  const displayServiceImage = serviceImage || '';
+  const displayServiceImage = serviceImage && serviceImage.trim() !== '' ? serviceImage : '/placeholder.svg';
 
 
 
@@ -787,19 +787,26 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                 <div className="lg:order-first">
                   <div className="relative">
                     {/* Main Image */}
-                    <div className="relative overflow-hidden rounded-2xl shadow-lg">
-                      <img
-                        src={ProjectBaseImage}
-                        alt="Professional plumber performing drain cleaning service with modern equipment"
-                        className="w-full h-[400px] object-cover hover:scale-105 transition-transform duration-500"
-                      />
-                      <div
-                        className="absolute inset-0"
-                        style={{
-                          background: `linear-gradient(135deg, ${safeColors.primaryButton.bg}20, transparent)`
-                        }}
-                      ></div>
-                    </div>
+                    {ProjectBaseImage && typeof ProjectBaseImage === 'string' && ProjectBaseImage.trim() !== '' ? (
+                      <div className="relative overflow-hidden rounded-2xl shadow-lg">
+                        <img
+                          src={ProjectBaseImage}
+                          alt="Professional plumber performing drain cleaning service with modern equipment"
+                          className="w-full h-[400px] object-cover hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            e.currentTarget.src = '/placeholder.svg';
+                          }}
+                        />
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background: `linear-gradient(135deg, ${safeColors.primaryButton.bg}20, transparent)`
+                          }}
+                        ></div>
+                      </div>
+                    ) : (
+                      <div className="relative overflow-hidden rounded-2xl shadow-lg h-[400px] bg-gray-200 animate-pulse"></div>
+                    )}
 
                     {/* Floating Stats Cards */}
                     <div

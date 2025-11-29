@@ -34,7 +34,7 @@ import DynamicFAIcon from '../../../extras/DynamicFAIcon'; // make sure the path
 import { removeDot } from "../../../extras/removeDot.js";
 import Link from 'next/link';
 import { slugify } from "../../../extras/slug";
-import { useSEO } from '../../../hooks/useSEO';
+// import { useSEO } from '../../../hooks/useSEO'; // Removed - using Next.js Metadata API instead
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
@@ -197,12 +197,17 @@ const DrainCleaning = () => {
     }
   }, [locationSlug, projectId]);
 
-  let seoPayload = locationSlug ? `/${locationSlug}/services/${slugify(serviceSlug)}` : `/services/${slugify(serviceSlug)}`
+  // SEO payload removed - using Next.js Metadata API instead
 
 
 
 
-  const { seoData } = useSEO(seoPayload);
+  // SEO data will be fetched server-side via Next.js Metadata API
+  // For client-side schema, we'll use fallback values
+  const seoData = {
+    meta_title: displayServiceName || 'Professional Service',
+    meta_description: serviceDetails?.description || 'Professional service available 24/7'
+  };
 
 
 
@@ -210,22 +215,28 @@ const DrainCleaning = () => {
   displayServiceName = locationName ? displayServiceName : removeDot(displayServiceName)
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+    }
   }, [pathname]); // runs every time URL path changes
 
 
   useEffect(() => {
-    localStorage.setItem("locaitonname", locationName);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("locaitonname", locationName);
+    }
   }, [locationName]);
 
 
   // When URL changes (same page but different param), force refetch
   useEffect(() => {
-    window.scrollTo(0, 0);
-    // Note: Next.js doesn't support route state, use query params or localStorage if needed
-    const savedServiceId = localStorage.getItem('serviceId') || "";
-    setServiceId(savedServiceId);
-    setReloadFlag(prev => prev + 1);
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      // Note: Next.js doesn't support route state, use query params or localStorage if needed
+      const savedServiceId = localStorage.getItem('serviceId') || "";
+      setServiceId(savedServiceId);
+      setReloadFlag(prev => prev + 1);
+    }
   }, [urlServiceName]);
 
   useEffect(() => {
@@ -442,7 +453,7 @@ const coloredSteps = stepProcess.map((step, i) => ({
         <ServiceSchemaMarkup
           serviceName="Professional Drain Cleaning Services"
           serviceDescription="Expert drain cleaning solutions to keep your pipes flowing smoothly. 24/7 emergency service available with fast response times."
-          serviceUrl={`${window.location.origin}/services/drain-cleaning`}
+          serviceUrl={typeof window !== 'undefined' ? `${window.location.origin}/services/drain-cleaning` : '/services/drain-cleaning'}
         />
         <Header />
         {/* Hero Section */}

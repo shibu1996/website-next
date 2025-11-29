@@ -39,7 +39,10 @@ const PageSchemaMarkup = ({
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
   const projectId = getProjectId();
-  console.log(areaName,"areaName from pageschema markup")
+  // Debug log only when areaName is provided
+  if (areaName) {
+    console.log(areaName, "areaName from pageschema markup");
+  }
 
   useEffect(() => {
     const fetchBasicProjectInfo = async () => {
@@ -60,19 +63,35 @@ const PageSchemaMarkup = ({
     if (projectId) fetchBasicProjectInfo();
   }, [projectId]);
 
+  // Get current origin safely (SSR-safe)
+  const getOrigin = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.origin;
+    }
+    return process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+  };
+
+  const getCurrentUrl = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.href;
+    }
+    return `${getOrigin()}${typeof window !== 'undefined' ? window.location.pathname : '/about'}`;
+  };
+
   // WebPage Schema (unchanged)
   const webPageSchema = generateWebPageSchema({
     name: pageTitle,
     description: pageDescription,
-    url: window.location.href
+    url: getCurrentUrl()
   });
 
   // Breadcrumb Schema (unchanged)
+  const currentOrigin = getOrigin();
   const breadcrumbItems = [
-    { name: 'Home', url: window.location.origin, position: 1 },
+    { name: 'Home', url: currentOrigin, position: 1 },
     ...breadcrumbs.map((item, index) => ({
       name: item.name,
-      url: item.url.startsWith('http') ? item.url : `${window.location.origin}${item.url}`,
+      url: item.url.startsWith('http') ? item.url : `${currentOrigin}${item.url}`,
       position: index + 2
     }))
   ];
@@ -118,7 +137,7 @@ const PageSchemaMarkup = ({
       description: projectDescription
         ? `Contact ${projectName || 'us'} for ${projectCategory || 'our'} services. ${projectDescription}`
         : `Contact ${projectName || 'us'} for ${projectCategory || 'our'} services.`,
-      url: `${window.location.origin}/contact`
+      url: `${currentOrigin}/contact`
     });
   }
 
@@ -128,7 +147,7 @@ const PageSchemaMarkup = ({
     aboutPageSchema = generateAboutPageSchema({
       name: `About ${projectName || 'Our Company'}`,
       description: projectDescription || `Learn about our ${projectCategory || 'professional'} services and team.`,
-      url: `${window.location.origin}/about`
+      url: `${currentOrigin}/about`
     });
   }
 
@@ -137,10 +156,10 @@ const PageSchemaMarkup = ({
   useSchemaMarkup(webPageSchema, `webpage-${pageType}`);
   useSchemaMarkup(breadcrumbSchema, `breadcrumb-${pageType}`);
 
-  if (localBusinessSchema) {
+  if (localBusinessSchema && areaName) {
     useSchemaMarkup(
       localBusinessSchema, 
-      `local-business-${(areaName || '').toLowerCase().replace(/\s+/g, '-')}`
+      `local-business-${areaName.toLowerCase().replace(/\s+/g, '-')}`
     );
   }
 

@@ -36,8 +36,16 @@ const SchemaMarkup = ({ areaId, areaType }: SchemaMarkupProps) => {
   const [mainLocation, setMainLocation] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [origin, setOrigin] = useState("");
 
   const projectId = getProjectId();
+
+  // Get origin safely for SSR
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setOrigin(window.location.origin);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchBasicProjectInfo = async () => {
@@ -100,11 +108,21 @@ const SchemaMarkup = ({ areaId, areaType }: SchemaMarkupProps) => {
     }
   }, [projectId, areaId, areaType]);
 
+  // Get current origin safely
+  const getCurrentOrigin = () => {
+    if (typeof window !== 'undefined' && window.location) {
+      return window.location.origin;
+    }
+    return origin || 'https://example.com'; // Fallback for SSR
+  };
+
+  const currentOrigin = getCurrentOrigin();
+
   // Generate schemas exactly like before
   const organizationSchema = generateOrganizationSchema({
     name: projectName,
     description: projectDescription,
-    url: window.location.origin,
+    url: currentOrigin,
     telephone: phoneNumber,
     email: email,
     address: {
@@ -122,7 +140,7 @@ const SchemaMarkup = ({ areaId, areaType }: SchemaMarkupProps) => {
     provider: projectName,
     areaServed: mainLocation,
     serviceType: projectCategory,
-    url: `${window.location.origin}/services/${slugify(service.service_name || '')}`
+    url: `${currentOrigin}/services/${slugify(service.service_name || '')}`
   }));
 
   const servicesSchema = generateServiceSchema(formattedServices);

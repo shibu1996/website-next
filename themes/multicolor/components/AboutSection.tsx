@@ -267,14 +267,14 @@ const sanitize = (raw: any): string =>
                       {/* Value */}
                       <div>
                         <div 
-                          className="text-3xl md:text-4xl font-black mb-1"
+                          className="text-xl md:text-2xl font-black mb-1"
                           style={{ color: colors.primaryButton.bg }}
                         >
                           {stat.value}
                         </div>
                         
                         {/* Label */}
-                        <div className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                        <div className="text-xs font-semibold text-gray-600 capitalize tracking-wide">
                           {stat.label}
                         </div>
                       </div>

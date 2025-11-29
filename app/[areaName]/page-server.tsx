@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { fetchSEOData } from '@/utils/fetchSEOData';
-import AreaDetailPageClient from '../components/AreaDetailPageClient';
+import AreaDetailPageClient from './page';
 
 interface AreaDetailPageProps {
   params: Promise<{ areaName: string }>;
@@ -43,3 +43,4 @@ const AreaDetailPage = async ({ params }: AreaDetailPageProps) => {
 };
 
 export default AreaDetailPage;
+

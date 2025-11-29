@@ -1,36 +1,24 @@
-
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import PageBreadcrumb from '../components/PageBreadcrumb';
-import AboutHero from '../components/about/AboutHero';
-import MissionVision from '../components/about/MissionVision';
-import CoreValues from '../components/about/CoreValues';
-import WhyDifferent from '../components/about/WhyDifferent';
-import WhyChooseUsSimple from '../components/WhyChooseUsSimple';
-import BookingSection from '../components/BookingSection';
-import FAQSection from '../components/FAQSection';
-import PageSchemaMarkup from '../components/PageSchemaMarkup';
-import React, { useEffect, useState } from 'react';
 'use client';
 
-import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { useParams } from 'next/navigation';
-import { Phone, Clock, Calendar, Star, Shield, Award, Sparkles, Users, Wrench } from 'lucide-react';
+import Image from 'next/image';
+import { Phone, Clock, Calendar, Star, Shield, Award, Sparkles, Users, Wrench, Target, Eye, CheckCircle, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { httpFile } from "@/config";
-import { getProjectId } from '../../../hooks/getProjectId';
-
-import { Target, Eye, CheckCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import DynamicFAIcon from '../../../extras/DynamicFAIcon';
-
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
-import { Home } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import Header from '@/themes/multicolor/components/Header';
+import Footer from '@/themes/multicolor/components/Footer';
+import PageBreadcrumb from '@/themes/multicolor/components/PageBreadcrumb';
+import PageSchemaMarkup from '@/themes/multicolor/components/PageSchemaMarkup';
+import FAQSection from '@/themes/multicolor/components/FAQSection';
+import { httpFile } from "@/config";
+import { getProjectId } from '@/hooks/getProjectId';
+import DynamicFAIcon from '@/extras/DynamicFAIcon';
+import { useTheme } from '@/themes/multicolor/contexts/ThemeContext';
 
-const About = () => {
+const AboutPageClient = () => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
   
@@ -70,12 +58,14 @@ const About = () => {
     title?: string;
     description?: string;
     gradient?: string;
+    iconClass?: string;
     [key: string]: unknown;
   }
   interface WhatMakesUsDifferentItem {
     title?: string;
     description?: string;
     color?: string;
+    iconClass?: string;
     [key: string]: unknown;
   }
   const [coreValues, setCoreValues] = useState<CoreValue[]>([]);
@@ -925,7 +915,6 @@ const About = () => {
 
 
 
-
       {/* Why Choose Us Section */}
       <section 
         className="py-16 relative overflow-hidden"
@@ -1162,4 +1151,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default AboutPageClient;
