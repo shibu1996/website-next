@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useHeaderData } from '../../../hooks/useHeaderData';
 import { httpFile } from "@/config";
 import { getProjectId } from '../../../hooks/getProjectId';
+import { getCachedData, setCachedData } from '../../../hooks/useApiCache';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '../contexts/ThemeContext';
@@ -44,17 +45,39 @@ const Header = () => {
 
   useEffect(() => {
     const fetchHeaderData = async () => {
+      if (!projectId) return;
+
       try {
+        const endpoint = '/webapp/v1/getheader';
+        const params = { projectId };
+        const cacheTime = 10 * 60 * 1000; // 10 minutes cache
+
+        // Check cache first
+        const cached = getCachedData<{ services?: Service[]; locations?: Location[] }>(endpoint, params);
+        if (cached) {
+          if (cached.services) setServices(cached.services);
+          if (cached.locations) setLocations(cached.locations);
+          return; // Use cached data, no API call needed
+        }
+
+        // Fetch from API if not cached
         const formData = new FormData();
-        formData.append('projectId', projectId || '');
-        const response = await httpFile.post('/webapp/v1/getheader', formData);
-        if (response.data?.services) setServices(response.data.services);
-        if (response.data?.locations) setLocations(response.data.locations);
+        formData.append('projectId', projectId);
+        const response = await httpFile.post(endpoint, formData);
+        
+        const responseData = response.data?.data || response.data;
+        
+        // Cache the response
+        setCachedData(endpoint, responseData, params, cacheTime);
+        
+        if (responseData?.services) setServices(responseData.services);
+        if (responseData?.locations) setLocations(responseData.locations);
       } catch (error) {
         console.error("Error fetching header data:", error);
       }
     };
-    if (projectId) fetchHeaderData();
+    
+    fetchHeaderData();
   }, [projectId]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -97,12 +120,12 @@ const Header = () => {
                 </>
               ) : (
                 <>
-                  <h1 
-                    className="text-lg font-bold"
+                  <h3 
+                    className="font-bold"
                     style={{ color: '#1f2937' }}
                   >
                     {projectName}
-                  </h1>
+                  </h3>
                   <p className="text-xs hidden sm:block" style={{ color: '#6b7280' }}>
                     {projectSlogan}
                   </p>

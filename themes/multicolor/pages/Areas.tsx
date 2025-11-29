@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "@/config";
 import { MapPin, Clock, Award, Phone, Star, Sparkles, Eye, Home, Wrench, Calendar } from 'lucide-react';
@@ -25,7 +26,6 @@ import { getProjectId } from '../../../hooks/getProjectId';
 import { Card, CardContent } from '@/components/ui/card';
 import DynamicFAIcon from '../../../extras/DynamicFAIcon';
 import { useTheme } from '../contexts/ThemeContext';
-import Loader from '../components/Loader';
 
 const Areas = () => {
   const breadcrumbItems = [
@@ -188,9 +188,8 @@ const Areas = () => {
   };
 
 
-  if (isLoading) {
-    return <Loader message="Loading Service Areas..." />;
-  }
+  // Show skeleton loading state like header
+  const showSkeleton = isLoading;
 
   return (
 
@@ -249,49 +248,75 @@ const Areas = () => {
                 <div className="text-center lg:text-left space-y-6 relative z-20">
 
                   {/* Badge */}
-                  <div className="inline-block mb-4">
-                    <span
-                      className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
-                      style={{
-                        color: colors.heading,
-                        backgroundColor: `${colors.primaryButton.bg}15`
-                      }}
-                    >
-                      <Star className="w-4 h-4" />
-                      Professional Services Available
-                    </span>
-                  </div>
+                  {showSkeleton ? (
+                    <div className="inline-block mb-4 animate-pulse">
+                      <div className="h-8 w-48 bg-gray-300 rounded-full"></div>
+                    </div>
+                  ) : (
+                    <div className="inline-block mb-4">
+                      <span
+                        className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
+                        style={{
+                          color: colors.heading,
+                          backgroundColor: `${colors.primaryButton.bg}15`
+                        }}
+                      >
+                        <Star className="w-4 h-4" />
+                        Professional Services Available
+                      </span>
+                    </div>
+                  )}
 
                   {/* Main Heading */}
-                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
-                    <span style={{ color: colors.heading }}>
-                      Areas We
-                    </span>{' '}
-                    <span
-                      className="inline-block"
-                      style={{
-                        backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        color: 'transparent',
-                        WebkitTextFillColor: 'transparent'
-                      }}
-                    >
-                      Serve
-                    </span>
-                  </h1>
+                  {showSkeleton ? (
+                    <div className="space-y-3">
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-3/4 bg-gray-300 rounded animate-pulse"></div>
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-1/2 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ) : (
+                    <h1 className="font-black">
+                      <span style={{ color: colors.heading }}>
+                        Areas We
+                      </span>{' '}
+                      <span
+                        className="inline-block"
+                        style={{
+                          backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
+                          WebkitBackgroundClip: 'text',
+                          backgroundClip: 'text',
+                          color: 'transparent',
+                          WebkitTextFillColor: 'transparent'
+                        }}
+                      >
+                        Serve
+                      </span>
+                    </h1>
+                  )}
 
                   {/* Subheading */}
-                  <p
-                    className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
-                    style={{ color: colors.description }}
-                  >
-                    Professional <span className="font-bold">{projectCategory}</span> {aboutHeroText}.
-                  </p>
+                  {showSkeleton ? (
+                    <div className="space-y-2 max-w-3xl mx-auto lg:mx-0">
+                      <div className="h-4 w-full bg-gray-300 rounded animate-pulse"></div>
+                      <div className="h-4 w-5/6 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ) : (
+                    <p
+                      className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
+                      style={{ color: colors.description }}
+                    >
+                      Professional <span className="font-bold">{projectCategory}</span> {aboutHeroText}.
+                    </p>
+                  )}
 
                   {/* CTA Buttons */}
                   <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
-
+                    {showSkeleton ? (
+                      <>
+                        <div className="h-12 w-32 bg-gray-300 rounded-xl animate-pulse"></div>
+                        <div className="h-12 w-36 bg-gray-300 rounded-xl animate-pulse"></div>
+                      </>
+                    ) : (
+                      <>
                     {/* Call Button */}
                     <a
                       href={`tel:${phoneNumber}`}
@@ -325,6 +350,8 @@ const Areas = () => {
                       <Wrench className="w-5 h-5" />
                       <span>Get Free Estimate</span>
                     </button>
+                      </>
+                    )}
                   </div>
 
                   {/* Trust Indicators */}
@@ -351,14 +378,14 @@ const Areas = () => {
           <div className="hidden lg:flex w-1/2 relative min-h-screen items-center justify-center p-8">
             <div className="relative w-full max-w-lg">
               {/* Main Image */}
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[500px]">
+                <Image
                   src={heroImage || '/placeholder.svg'}
                   alt="Professional Services"
-                  className="w-full h-[500px] object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = '/placeholder.svg';
-                  }}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 0vw, 50vw"
+                  quality={90}
                 />
                 
                 {/* Gradient Overlay */}
@@ -437,7 +464,7 @@ const Areas = () => {
                   Service Areas
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                 Areas We <span style={{ color: colors.primaryButton.bg }}>Serve</span>
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed mt-6">
@@ -485,7 +512,7 @@ const Areas = () => {
 
                     {/* Location Info */}
                     <div className="space-y-2">
-                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-gray-800 transition-colors">
+                      <h3 className="font-bold text-gray-900 group-hover:text-gray-800 transition-colors">
                         {location.name}
                       </h3>
                       {location.description && (
@@ -572,7 +599,7 @@ const Areas = () => {
                       </span>
                     </div>
 
-                    <h3 className="text-2xl font-bold text-card-foreground mb-3 animate-text-slide-left" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
+                    <h3 className="font-bold text-card-foreground mb-3 animate-text-slide-left" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
                       {area.name}
                     </h3>
                     <p className="text-muted-foreground mb-6 leading-relaxed animate-subtitle-fade-in" style={{ animationDelay: `${index * 0.1 + 0.4}s` }}>
@@ -618,7 +645,7 @@ const Areas = () => {
                   Why Choose Us
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                 Why Choose <span style={{ color: colors.primaryButton.bg }}>{projectName}</span>?
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
@@ -669,7 +696,7 @@ const Areas = () => {
 
                     {/* Text Content */}
                     <div className="space-y-3">
-                      <h3 className="text-xl font-bold leading-tight text-gray-900">
+                      <h3 className="font-bold text-gray-900">
                         {feature.title}
                       </h3>
                       <p className="text-base leading-relaxed text-gray-600">
@@ -710,7 +737,7 @@ const Areas = () => {
             
             {/* Section Header */}
             <div className="mb-8">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl mx-auto leading-tight">
+              <h2 className="font-bold text-white mb-4 max-w-2xl mx-auto">
                 {getCTAContent(0).title}
               </h2>
               <p className="text-xs sm:text-sm text-white/90 max-w-2xl mx-auto leading-relaxed">

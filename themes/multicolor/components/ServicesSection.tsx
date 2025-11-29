@@ -87,10 +87,10 @@ const ServicesSection = ({ formattedLocationName = "" }: ServicesSectionProps) =
               Our Services
             </span>
           </div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+          <h2 className="font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
             Professional <span style={{ color: colors.primaryButton.bg }}>{projectCategory}</span> Services {formattedLocationName}
           </h2>
-          <p className="text-xs sm:text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
+          <p className="text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
             Comprehensive {projectCategory} solutions delivered by experienced professionals. We ensure quality results for every project.
           </p>
         </div>
@@ -153,7 +153,7 @@ const ServicesSection = ({ formattedLocationName = "" }: ServicesSectionProps) =
               {/* Content */}
               <div className="p-6 space-y-3">
                 <h4 
-                  className="font-bold text-lg leading-tight group-hover:transition-colors duration-300"
+                  className="font-bold leading-tight group-hover:transition-colors duration-300"
                   style={{ 
                     color: 'inherit',
                     '--hover-color': colors.primaryButton.bg
@@ -161,7 +161,7 @@ const ServicesSection = ({ formattedLocationName = "" }: ServicesSectionProps) =
                 >
                   {service.service_name} {formattedLocationName}
                 </h4>
-                <p className="text-gray-600 leading-relaxed text-sm">
+                <p className="text-gray-600 leading-relaxed">
                   {getTruncatedDescription(service.service_description)}
                 </p>
 

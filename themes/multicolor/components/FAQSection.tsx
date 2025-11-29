@@ -112,7 +112,7 @@ const FAQSection = () => {
                       >
                         <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                       </div>
-                      <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 pr-4 leading-tight">
+                      <h3 className="font-semibold text-gray-900 pr-4 leading-tight">
                         {faq.question}
                       </h3>
                     </div>

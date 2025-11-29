@@ -6,7 +6,6 @@ import { useSchemaMarkup } from '../hooks/useSchemaMarkup';
 import { generateWebPageSchema } from '../utils/schemaGenerator';
 import { useTheme } from '../contexts/ThemeContext';
 import { Shield, AlertTriangle, Eye, Lock, User, Database, Globe, Mail } from 'lucide-react';
-import Loader from '../components/Loader';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 'use client';
@@ -286,11 +285,7 @@ const PrivacyPolicy = () => {
 
                 {/* Content */}
                 <div className="space-y-3">
-                  {loading && (
-                    <div className="py-6">
-                      <Loader message="Loading Privacy Policy..." size="sm" />
-                    </div>
-                  )}
+                  {/* Loading state removed for better UX */}
                   
                   {error && (
                     <div className="text-center py-6">

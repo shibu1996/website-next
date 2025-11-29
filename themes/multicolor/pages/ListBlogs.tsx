@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 // @ts-ignore - react-helmet-async may not be installed
@@ -14,7 +15,6 @@ import { getProjectId } from '../../../hooks/getProjectId';
 import { useTheme } from '../contexts/ThemeContext';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
-import Loader from '../components/Loader';
 
 type BlogItem = { 
   slug: string; 
@@ -58,6 +58,9 @@ const Blogs = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   console.log("ListBlogs loading state:", loading);
+  
+  // Show skeleton loading state like header
+  const showSkeleton = loading;
 
   // Function to generate quick answer based on title (exactly 15 words)
   const generateQuickAnswer = (title: string) => {
@@ -199,20 +202,30 @@ const Blogs = () => {
           <div className="container mx-auto px-4 sm:px-8 lg:px-16 text-center relative z-10">
             <div className="max-w-4xl mx-auto">
               <div className="mb-8">
-                <div 
-                  className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl"
-                  style={{
-                    background: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`
-                  }}
-                >
-                  <BookOpen className="w-10 h-10 text-white" />
-                </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-                  Our Blog & Articles
-                </h1>
-                <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
-                  Discover insights, tips, and expert advice from our team of professionals
-                </p>
+                {showSkeleton ? (
+                  <>
+                    <div className="w-20 h-20 rounded-full bg-gray-300 mx-auto mb-6 animate-pulse"></div>
+                    <div className="h-10 sm:h-12 lg:h-14 w-64 bg-gray-300 rounded mx-auto mb-6 animate-pulse"></div>
+                    <div className="h-6 w-96 bg-gray-300 rounded mx-auto animate-pulse"></div>
+                  </>
+                ) : (
+                  <>
+                    <div 
+                      className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl"
+                      style={{
+                        background: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`
+                      }}
+                    >
+                      <BookOpen className="w-10 h-10 text-white" />
+                    </div>
+                    <h1 className="font-bold text-white mb-6">
+                      Our Blog & Articles
+                    </h1>
+                    <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
+                      Discover insights, tips, and expert advice from our team of professionals
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -247,7 +260,7 @@ const Blogs = () => {
               <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-4" style={{ backgroundColor: `${safeColors.primaryButton.bg}15`, color: safeColors.primaryButton.bg }}>
                 Latest Articles
               </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="font-bold text-gray-900 mb-4">
                 Explore Our Content
               </h2>
               <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
@@ -255,17 +268,7 @@ const Blogs = () => {
               </p>
             </div>
 
-            {/* Loading State */}
-            {loading && (
-              <div className="py-16">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: safeColors.primaryButton.bg }}></div>
-                  <h2 className="text-xl font-bold mb-2" style={{ color: safeColors.heading }}>Loading Blogs...</h2>
-                  <p style={{ color: safeColors.description }}>Please wait while we load the blogs.</p>
-                  <p className="text-xs text-gray-500 mt-2">Loading state: {loading.toString()}</p>
-                </div>
-              </div>
-            )}
+            {/* Loading state removed for better UX */}
 
             {/* Error State */}
             {error && !loading && (
@@ -273,7 +276,7 @@ const Blogs = () => {
                 <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: `${safeColors.primaryButton.bg}15` }}>
                   <BookOpen className="w-8 h-8" style={{ color: safeColors.primaryButton.bg }} />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Error Loading Blogs</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">Error Loading Blogs</h3>
               <p className="text-red-600 font-medium">{error}</p>
               </div>
             )}
@@ -284,7 +287,7 @@ const Blogs = () => {
                 <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: `${safeColors.primaryButton.bg}15` }}>
                   <BookOpen className="w-8 h-8" style={{ color: safeColors.primaryButton.bg }} />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Blogs Found</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">No Blogs Found</h3>
                 <p className="text-gray-600">We're working on adding new content. Please check back later.</p>
               </div>
             )}
@@ -295,7 +298,7 @@ const Blogs = () => {
                 <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: `${safeColors.primaryButton.bg}15` }}>
                   <Search className="w-8 h-8" style={{ color: safeColors.primaryButton.bg }} />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Results Found</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">No Results Found</h3>
                 <p className="text-gray-600">Try adjusting your search terms.</p>
               </div>
             )}
@@ -314,17 +317,14 @@ const Blogs = () => {
                   >
                     {/* Featured Image */}
                     <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={blog.featured_image}
+                      <Image
+                        src={blog.featured_image || '/placeholder.svg'}
                         alt={blog.title || blog.slug.replace(/-/g, " ")}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        quality={85}
                         loading="lazy"
-                        decoding="async"
-                        width="400"
-                        height="192"
-                        onError={(e) => {
-                          e.currentTarget.src = "https://picsum.photos/seed/blog-fallback/640/400";
-                        }}
                       />
                       
                       {/* Gradient Overlay */}
@@ -359,7 +359,7 @@ const Blogs = () => {
                     <div className="p-6 space-y-4">
                       {/* Blog Title */}
                       <div className="space-y-3">
-                        <h3 className="text-lg font-bold leading-tight text-gray-900 group-hover:transition-colors duration-300">
+                        <h3 className="font-bold text-gray-900 group-hover:transition-colors duration-300">
                           {blog.title || blog.slug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
                         </h3>
                         

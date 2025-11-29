@@ -62,10 +62,7 @@ const ServicesProcess = ({ formattedLocationName = "" }: ServicesProcessProps) =
     fetchData();
   }, [projectId]);
 
-  // Ensure there's a loading state
-  if (isLoading) {
-    return <div>Loading...</div>; // Replace with a skeleton or loading spinner
-  }
+  // Loading state removed for better UX
 
   // Assign colors to each process step, cycling through the colors if there are more steps than colors
   const coloredSteps = processSteps.map((step: ProcessStep, index: number) => {
@@ -89,7 +86,7 @@ const ServicesProcess = ({ formattedLocationName = "" }: ServicesProcessProps) =
             <span className="text-primary font-semibold">  Our Simple Process </span>
           </div>
           {/* <h2 className="text-5xl font-bold text-foreground mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent"> */}
-          <h2 className="text-4xl font-bold text-foreground mb-8">
+          <h2 className="font-bold text-foreground mb-8">
 
             Our Simple Process
           </h2>
@@ -109,7 +106,7 @@ const ServicesProcess = ({ formattedLocationName = "" }: ServicesProcessProps) =
                         <DynamicFAIcon iconClass={step.iconClass || ''} className="text-white text-3xl" />
                       </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-foreground mb-4">{step.title}</h3>
+                    <h3 className="font-bold text-foreground mb-4">{step.title}</h3>
                     <p className="text-muted-foreground text-lg leading-relaxed">{step.description}</p>
                   </div>
                 </div>
@@ -138,7 +135,7 @@ const ServicesProcess = ({ formattedLocationName = "" }: ServicesProcessProps) =
 
         {/* <div className="text-center mt-20">
                         <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-3xl p-8 border border-primary/20">
-                          <h3 className="text-3xl font-bold text-foreground mb-4">Ready to Get Started?</h3>
+                          <h3 className="font-bold text-foreground mb-4">Ready to Get Started?</h3>
                           <p className="text-lg text-muted-foreground mb-6">
                             Experience our professional process firsthand. Contact us today for your free estimate!
                           </p>

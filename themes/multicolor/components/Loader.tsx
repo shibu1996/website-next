@@ -140,13 +140,7 @@ const Loader: React.FC<LoaderProps> = ({
               {message}
             </h2>
 
-            {/* Description */}
-            <p 
-              className="text-sm transition-all duration-500"
-              style={{ color: colors.description }}
-            >
-              Please wait while we load the content.
-            </p>
+            {/* Description removed */}
 
             {/* Progress Dots */}
             <div className="flex justify-center mt-6 space-x-2">

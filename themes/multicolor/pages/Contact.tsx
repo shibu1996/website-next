@@ -23,7 +23,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useTheme } from '../contexts/ThemeContext';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
-import Loader from '../components/Loader';
 // @ts-ignore - DynamicContactForm may not exist
 import DynamicContactForm from '../../../components/DynamicContactForm';
 
@@ -129,9 +128,8 @@ const Contact = () => {
 
   const faqSchema = generateFAQSchema(projectFaqs);
 
-  if (isLoading) {
-    return <Loader message="Loading Contact Page..." />;
-  }
+  // Show skeleton loading state like header
+  const showSkeleton = !phoneNumber && !email;
 
   return (
 
@@ -226,24 +224,35 @@ const Contact = () => {
                 {/* Left Side - Content */}
                 <div className="text-center lg:text-left space-y-8 relative z-20">
                   {/* Badge */}
-                  <div className="inline-block">
-                    <span
-                      className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-4 py-2 text-xs font-semibold"
-                      style={{
-                        color: colors.heading,
-                        backgroundColor: `${colors.primaryButton.bg}15`
-                      }}
-                    >
-                      <Star className="w-3 h-3" />
-                      Contact Us
-                    </span>
-                  </div>
+                  {showSkeleton ? (
+                    <div className="inline-block animate-pulse">
+                      <div className="h-6 w-24 bg-gray-300 rounded-full"></div>
+                    </div>
+                  ) : (
+                    <div className="inline-block">
+                      <span
+                        className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-4 py-2 text-xs font-semibold"
+                        style={{
+                          color: colors.heading,
+                          backgroundColor: `${colors.primaryButton.bg}15`
+                        }}
+                      >
+                        <Star className="w-3 h-3" />
+                        Contact Us
+                      </span>
+                    </div>
+                  )}
 
                   {/* Main Heading */}
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-[1.1] tracking-tight">
-                    <span style={{ color: colors.heading }}>
-                      Get In Touch
-                    </span>{' '}
+                  {showSkeleton ? (
+                    <div className="space-y-3">
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-3/4 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ) : (
+                    <h1 className="font-black">
+                      <span style={{ color: colors.heading }}>
+                        Get In Touch
+                      </span>{' '}
                     <span
                       className="inline-block"
                       style={{
@@ -257,6 +266,7 @@ const Contact = () => {
                       Today
                     </span>
                   </h1>
+                  )}
 
                   {/* Subheading */}
                   <p
@@ -308,7 +318,7 @@ const Contact = () => {
                     {/* Phone */}
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 text-center break-words">
                       <Phone className="w-6 h-6 mx-auto mb-2" style={{ color: colors.accent }} />
-                      <h3 className="text-xs sm:text-sm font-bold text-white mb-1">Phone</h3>
+                      <h3 className="font-bold text-white mb-1">Phone</h3>
                       <p className="text-white/80 text-xs sm:text-sm break-all">{phoneNumber}</p>
                     </div>
 
@@ -336,7 +346,7 @@ const Contact = () => {
                   >
                     {/* Form Header */}
                     <div className="text-center mb-8">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                      <h3 className="font-bold text-gray-900 mb-2">
                         Request a <span style={{ color: colors.primaryButton.bg }}>Free Quote</span>
                       </h3>
                       <p className="text-gray-600 text-sm leading-relaxed">
@@ -352,7 +362,7 @@ const Contact = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
-                        <h4 className="text-lg font-bold text-gray-900 mb-1">Thank You!</h4>
+                        <h4 className="font-bold text-gray-900 mb-1">Thank You!</h4>
                         <p className="text-sm text-gray-600">Your message has been sent successfully. We'll get back to you soon!</p>
                       </div>
                     )}
@@ -398,7 +408,7 @@ const Contact = () => {
                   FAQ
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                 Frequently Asked <span style={{ color: colors.primaryButton.bg }}>Questions</span>
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed mt-6">

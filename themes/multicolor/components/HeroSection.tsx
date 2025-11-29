@@ -37,7 +37,7 @@ const HeroSection = () => {
         <div className="text-center space-y-6 animate-hero-fade-in">
 
           {/* Enhanced Trust Badge */}
-          <div className="inline-flex items-center glass-card rounded-full px-6 py-3 text-primary-foreground font-semibold text-base sm:text-lg animate-badge-bounce shadow-2xl">
+          <div className="inline-flex items-center glass-card rounded-full px-6 py-3 text-primary-foreground font-semibold animate-badge-bounce shadow-2xl">
             <Star className="w-5 h-5 mr-2 fill-current animate-pulse" />
             <Sparkles className="w-4 h-4 mr-1 animate-pulse" />
             Trusted by 10,000+ Customers
@@ -46,17 +46,17 @@ const HeroSection = () => {
 
           {/* Enhanced Main Headline */}
           <div className="space-y-3 animate-heading-slide-up" style={{ animationDelay: '0.2s' }}>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground leading-tight">
+            <h1 className="font-bold text-primary-foreground leading-tight">
               Emergency
               <span className="block md:inline text-transparent bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text animate-gradient-shift"> Plumbing </span>
-              <span className="block md:inline text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-primary-foreground/90">
+              <span className="block md:inline text-primary-foreground/90">
                 Service
               </span>
             </h1>
           </div>
 
           {/* Enhanced Subheadline */}
-          <p className="text-lg sm:text-xl md:text-2xl text-primary-foreground/90 font-medium max-w-4xl mx-auto leading-relaxed animate-subtitle-fade-in" style={{ animationDelay: '0.4s' }}>
+          <p className="text-primary-foreground/90 font-medium max-w-4xl mx-auto leading-relaxed animate-subtitle-fade-in" style={{ animationDelay: '0.4s' }}>
             Professional plumbers available 24/7 for all your emergency plumbing needs.
             Fast response, guaranteed satisfaction.
           </p>
@@ -80,8 +80,8 @@ const HeroSection = () => {
                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                   </div>
                   <div className="flex flex-col items-start">
-                    <span className="text-sm font-semibold opacity-90">CALL NOW</span>
-                    <span className="text-xl font-black tracking-wide">14676823822</span>
+                    <span className="font-semibold opacity-90">CALL NOW</span>
+                    <span className="font-black tracking-wide">14676823822</span>
                   </div>
                 </div>
                 
@@ -105,8 +105,8 @@ const HeroSection = () => {
                     <Wrench className="w-6 h-6 animate-float-bounce" />
                   </div>
                   <div className="flex flex-col items-start">
-                    <span className="text-sm font-semibold opacity-90">FREE</span>
-                    <span className="text-xl font-black tracking-wide">Get Estimate</span>
+                    <span className="font-semibold opacity-90">FREE</span>
+                    <span className="font-black tracking-wide">Get Estimate</span>
                   </div>
                 </div>
               </Button>
@@ -126,8 +126,8 @@ const HeroSection = () => {
                   <div className="absolute inset-0 bg-red-500/10 rounded-xl sm:rounded-2xl animate-pulse"></div>
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-red-600 mb-2 sm:mb-3">Emergency Response</h3>
-                  <p className="text-gray-700 text-sm sm:text-base md:text-lg">
+                  <h3 className="font-bold text-red-600 mb-2 sm:mb-3">Emergency Response</h3>
+                  <p className="text-gray-700">
                     24/7 emergency plumbing service with fast response time guarantee.
                   </p>
                 </div>
@@ -147,8 +147,8 @@ const HeroSection = () => {
                   <div className="absolute inset-0 bg-primary/10 rounded-xl sm:rounded-2xl animate-pulse"></div>
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary mb-2 sm:mb-3">Licensed Professionals</h3>
-                  <p className="text-gray-700 text-sm sm:text-base md:text-lg">
+                  <h3 className="font-bold text-primary mb-2 sm:mb-3">Licensed Professionals</h3>
+                  <p className="text-gray-700">
                     Certified and insured plumbers with years of experience and expertise.
                   </p>
                 </div>
@@ -168,8 +168,8 @@ const HeroSection = () => {
                   <div className="absolute inset-0 bg-yellow-500/10 rounded-xl sm:rounded-2xl animate-pulse"></div>
                 </div>
                 <div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-600 mb-2 sm:mb-3">100% Satisfaction</h3>
-                  <p className="text-gray-700 text-sm sm:text-base md:text-lg">
+                  <h3 className="font-bold text-yellow-600 mb-2 sm:mb-3">100% Satisfaction</h3>
+                  <p className="text-gray-700">
                     Quality workmanship guaranteed with complete customer satisfaction promise.
                   </p>
                 </div>

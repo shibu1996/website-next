@@ -38,17 +38,7 @@ const NotFound = () => {
     );
   }, [pathname]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen font-poppins flex items-center justify-center" style={{ backgroundColor: colors.surface }}>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: colors.primaryButton.bg }}></div>
-          <h2 className="text-xl font-bold mb-2" style={{ color: colors.heading }}>Loading...</h2>
-          <p style={{ color: colors.description }}>Please wait while we load the page.</p>
-        </div>
-      </div>
-    );
-  }
+  // Loading state removed for better UX
 
   return (
     <div className="min-h-screen font-poppins" style={{ backgroundColor: colors.surface }}>

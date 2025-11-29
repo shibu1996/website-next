@@ -37,17 +37,51 @@ const MapSection = ({
 }: MapSectionProps) => {
   const { getThemeColors } = useTheme();
   const colors = getThemeColors();
-  const mapRef = useRef(null);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [mapReady, setMapReady] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Intersection Observer to detect when map section is visible
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVisible) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        });
+      },
+      {
+        rootMargin: '200px', // Start loading 200px before it's visible
+        threshold: 0.1
+      }
+    );
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isVisible]);
 
   useEffect(() => {
+    // Only load map when section is visible
+    if (!isVisible || !mapRef.current) return;
+
     let map: any;
     let mapboxgl: any;
     let mounted = true;
 
     const loadMap = async () => {
-      mapboxgl = await import('mapbox-gl');
-      mapboxgl.default.accessToken = MAPBOX_TOKEN;
+      setIsLoading(true);
+      try {
+        mapboxgl = await import('mapbox-gl');
+        mapboxgl.default.accessToken = MAPBOX_TOKEN;
 
       if (mapRef.current && lat != null && lng != null && mounted) {
         map = new mapboxgl.default.Map({
@@ -118,6 +152,7 @@ const MapSection = ({
           });
 
           setMapReady(true);
+          setIsLoading(false);
         });
 
         map.addControl(new mapboxgl.default.NavigationControl({ visualizePitch: true }), 'top-right');
@@ -305,6 +340,10 @@ const MapSection = ({
           }).setHTML(popupContent))
           .addTo(map);
       }
+      } catch (error) {
+        console.error('Error loading mapbox:', error);
+        setIsLoading(false);
+      }
     };
 
     loadMap();
@@ -313,7 +352,7 @@ const MapSection = ({
       mounted = false;
       if (map) map.remove();
     };
-  }, [lat, lng, locationName, pageType, colors]);
+  }, [isVisible, lat, lng, locationName, pageType, colors]);
 
   if (lat == null || lng == null) return null;
 
@@ -347,7 +386,7 @@ const MapSection = ({
           }
         `}
       </style>
-      <section className="py-16 bg-white">
+      <section ref={containerRef} className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-8 lg:px-16">
         
         {/* Section Header */}
@@ -373,10 +412,27 @@ const MapSection = ({
 
         {/* Map Container */}
         <div className="relative">
+          {/* Loading Placeholder */}
+          {isLoading && (
+            <div
+              className="w-full h-[500px] rounded-3xl shadow-2xl overflow-hidden flex items-center justify-center"
+              style={{
+                border: `3px solid ${colors.primaryButton.bg}20`,
+                background: `linear-gradient(135deg, ${colors.primaryButton.bg}10, ${colors.accent}10)`
+              }}
+            >
+              <div className="text-center">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-solid border-current border-r-transparent mb-4" style={{ color: colors.primaryButton.bg }}></div>
+                <p className="text-gray-600 font-medium">Loading map...</p>
+              </div>
+            </div>
+          )}
+          
+          {/* Map */}
           <div
             ref={mapRef}
             id="map-container"
-            className="w-full h-[500px] rounded-3xl shadow-2xl overflow-hidden"
+            className={`w-full h-[500px] rounded-3xl shadow-2xl overflow-hidden ${isLoading ? 'hidden' : ''}`}
             style={{
               border: `3px solid ${colors.primaryButton.bg}20`
             }}

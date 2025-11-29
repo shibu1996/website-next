@@ -18,7 +18,6 @@ import PageBreadcrumb from "../components/PageBreadcrumb";
 import SEOHead from "../components/SEOHead";
 import { useTheme } from '../contexts/ThemeContext';
 import { BookOpen } from 'lucide-react';
-import Loader from '../components/Loader';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://apis.smartlybuild.dev";
 const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -116,13 +115,7 @@ const BlogPage: React.FC = () => {
     fetchBlog();
   }, [slug, router]);
 
-  if (loading) {
-    return (
-      <HelmetProvider>
-        <Loader message="Loading Blog..." />
-      </HelmetProvider>
-    );
-  }
+  // Loading state removed for better UX
 
   const breadcrumbItems = [{ label: "Blogs" }];
 

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
@@ -8,7 +9,6 @@ import { useSEO } from '../../../hooks/useSEO';
 import { httpFile } from "@/config";
 import { getProjectId } from '../../../hooks/getProjectId';
 import { generateFAQSchema, generateReviewSchema, generateServicesSchema } from "../../../hooks/schemaMarkup"
-import Loader from '../components/Loader';
 import { useTheme } from '../contexts/ThemeContext';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 // @ts-ignore - react-helmet-async may not be installed
@@ -345,7 +345,7 @@ const AreaDetail = () => {
 
         <div className="container mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
           <div className="text-center">
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl mx-auto leading-tight">
+            <h2 className="font-bold text-white mb-4 max-w-2xl mx-auto">
               {cta.title}
             </h2>
             <p className="text-xs sm:text-sm text-white/90 max-w-2xl mx-auto leading-relaxed mb-8">
@@ -783,9 +783,8 @@ const AreaDetail = () => {
     borderColor: step.borderColor || colorSets[i % colorSets.length].borderColor,
     number: (i + 1).toString()
   }));
-  if (isHeroLoading || isLoading) {
-    return <Loader message="Loading..." variant="elegant" size="lg" />;
-  }
+  // Show skeleton loading state like header
+  const showSkeleton = isHeroLoading || isLoading;
 
   // console.log(countryDescription,"countryDescriptioncountryDescriptioncountryDescriptioncountryDescription")
 
@@ -956,52 +955,78 @@ const AreaDetail = () => {
                 <div className="text-center lg:text-left space-y-6 relative z-20">
 
                   {/* Badge */}
-                  <div className="inline-block mb-4">
-                    <span
-                      className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
-                      style={{
-                        color: colors.heading,
-                        backgroundColor: `${colors.primaryButton.bg}15`
-                      }}
-                    >
-                      <Star className="w-4 h-4" />
-                      {heroHeading}
-                    </span>
-                  </div>
+                  {showSkeleton ? (
+                    <div className="inline-block mb-4 animate-pulse">
+                      <div className="h-8 w-48 bg-gray-300 rounded-full"></div>
+                    </div>
+                  ) : (
+                    <div className="inline-block mb-4">
+                      <span
+                        className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
+                        style={{
+                          color: colors.heading,
+                          backgroundColor: `${colors.primaryButton.bg}15`
+                        }}
+                      >
+                        <Star className="w-4 h-4" />
+                        {heroHeading}
+                      </span>
+                    </div>
+                  )}
 
                   {/* Main Heading */}
-                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
-                    <span style={{ color: colors.heading }}>
-                      {cityName}
-                    </span>{' '}
-                    <span
-                      className="inline-block"
-                      style={{
-                        backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        color: 'transparent',
-                        WebkitTextFillColor: 'transparent'
-                      }}
-                    >
-                      {projectCategory}
-                    </span>{' '}
-                    <span style={{ color: colors.heading }}>
-                      Services
-                    </span>
-                  </h1>
+                  {showSkeleton ? (
+                    <div className="space-y-3">
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-full bg-gray-300 rounded animate-pulse"></div>
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-3/4 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ) : (
+                    <h1 className="font-black">
+                      <span style={{ color: colors.heading }}>
+                        {cityName}
+                      </span>{' '}
+                      <span
+                        className="inline-block"
+                        style={{
+                          backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
+                          WebkitBackgroundClip: 'text',
+                          backgroundClip: 'text',
+                          color: 'transparent',
+                          WebkitTextFillColor: 'transparent'
+                        }}
+                      >
+                        {projectCategory}
+                      </span>{' '}
+                      <span style={{ color: colors.heading }}>
+                        Services
+                      </span>
+                    </h1>
+                  )}
 
                   {/* Subheading */}
-                  <p
-                    className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
-                    style={{ color: colors.description }}
-                  >
-                    {getPageDescription()}
-                  </p>
+                  {showSkeleton ? (
+                    <div className="space-y-2 max-w-3xl mx-auto lg:mx-0">
+                      <div className="h-4 w-full bg-gray-300 rounded animate-pulse"></div>
+                      <div className="h-4 w-5/6 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ) : (
+                    <p
+                      className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
+                      style={{ color: colors.description }}
+                    >
+                      {getPageDescription()}
+                    </p>
+                  )}
 
                   {/* CTA Buttons */}
                   <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
-
+                    {showSkeleton ? (
+                      <>
+                        <div className="h-12 w-32 bg-gray-300 rounded-xl animate-pulse"></div>
+                        <div className="h-12 w-36 bg-gray-300 rounded-xl animate-pulse"></div>
+                      </>
+                    ) : (
+                      <>
                     {/* Call Button */}
                     <a
                       href={`tel:${phoneNumber}`}
@@ -1035,6 +1060,8 @@ const AreaDetail = () => {
                       <Wrench className="w-5 h-5" />
                       <span>Get Free Estimate</span>
                     </button>
+                      </>
+                    )}
                   </div>
 
                   {/* Trust Indicators */}
@@ -1070,7 +1097,7 @@ const AreaDetail = () => {
                   <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: colors.primaryButton.bg }}></div>
                   <span className="text-sm font-semibold" style={{ color: colors.primaryButton.bg }}>About Us</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+                <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                   Professional <span style={{ color: colors.primaryButton.bg }}>{projectCategory}</span> You Can Trust
                 </h2>
               </div>
@@ -1085,10 +1112,13 @@ const AreaDetail = () => {
                     
                     {/* Main Image */}
                     <div className="relative rounded-3xl overflow-hidden h-[500px]">
-                      <img
-                        src={hero2Image}
-                        alt="Professional {projectCategory} services"
-                        className="w-full h-full object-cover"
+                      <Image
+                        src={hero2Image || '/placeholder.svg'}
+                        alt="Professional services"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        quality={90}
                       />
                       
                       {/* Gradient Overlay */}
@@ -1152,7 +1182,7 @@ const AreaDetail = () => {
                     Our Services
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+                <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                   Professional <span style={{ color: colors.primaryButton.bg }}>{projectCategory}</span> Services {cityName}
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
@@ -1191,17 +1221,14 @@ const AreaDetail = () => {
                     >
                       {/* Image Container */}
                       <div className="relative h-48 overflow-hidden">
-                        <img
+                        <Image
                           src={service.images?.[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
                           alt={service.service_name || 'Service'}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-500"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          quality={85}
                           loading="lazy"
-                          decoding="async"
-                          width="400"
-                          height="192"
-                          onError={(e) => {
-                            e.currentTarget.src = "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg";
-                          }}
                         />
                         
                         {/* Gradient Overlay */}
@@ -1281,7 +1308,7 @@ const AreaDetail = () => {
                     Why Choose Us in {cityName}
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+                <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                   Why Choose <span style={{ color: colors.primaryButton.bg }}>{projectName}</span>?
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
@@ -1332,7 +1359,7 @@ const AreaDetail = () => {
 
                       {/* Text Content */}
                       <div className="space-y-3">
-                        <h3 className="text-xl font-bold leading-tight text-gray-900">
+                        <h3 className="font-bold text-gray-900">
                           {feature.title}
                         </h3>
                         <p className="text-base leading-relaxed text-gray-600">
@@ -1371,7 +1398,7 @@ const AreaDetail = () => {
                     Our Process
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+                <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                   Our Simple <span style={{ color: colors.primaryButton.bg }}>Process </span>in {cityName}
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
@@ -1423,7 +1450,7 @@ const AreaDetail = () => {
                           )}
 
                           {/* Content */}
-                          <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.title}</h3>
+                          <h3 className="font-bold text-gray-900 mb-4">{step.title}</h3>
                           <p className="text-gray-600 text-lg leading-relaxed">{step.description}</p>
                         </div>
                       </div>
@@ -1494,7 +1521,7 @@ const AreaDetail = () => {
                     Service Areas
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+                <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                   Areas We <span style={{ color: colors.primaryButton.bg }}>Serve</span>
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed mt-6">
@@ -1651,7 +1678,7 @@ const AreaDetail = () => {
                     Our Guarantee
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+                <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                   Our <span style={{ color: colors.primaryButton.bg }}>{projectCategory}</span> Guarantee
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
@@ -1827,7 +1854,7 @@ const AreaDetail = () => {
                     Customer Reviews
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+                <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                   What Our <span style={{ color: colors.primaryButton.bg }}>Customers</span> Say
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed mt-6">
@@ -1987,7 +2014,7 @@ const AreaDetail = () => {
                     FAQ
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+                <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                   Frequently Asked <span style={{ color: colors.primaryButton.bg }}>Questions</span>
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed mt-6">

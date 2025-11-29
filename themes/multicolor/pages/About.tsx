@@ -14,6 +14,7 @@ import SEOHead from '../components/SEOHead';
 import React, { useEffect, useState } from 'react';
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useParams } from 'next/navigation';
@@ -29,7 +30,6 @@ import DynamicFAIcon from '../../../extras/DynamicFAIcon';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import Loader from '../components/Loader';
 
 const About = () => {
   const { getThemeColors } = useTheme();
@@ -211,10 +211,8 @@ const About = () => {
 
   let title = `About ${projectCategory} Service - ${projectName}`
 
-  // Simple loading state
-  if (!projectName && !aboutHeroText) {
-    return <Loader message="Loading About Page..." />;
-  }
+  // Show skeleton loading state like header
+  const showSkeleton = !projectName && !aboutHeroText;
 
   return (
     <div className="min-h-screen font-poppins">
@@ -267,29 +265,41 @@ const About = () => {
               <div className="text-center lg:text-left space-y-6 relative z-20">
 
                 {/* Badge */}
-                <div className="inline-block mb-4">
-                  <span
-                    className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
-                    style={{
-                      color: safeColors.heading,
-                      backgroundColor: `${safeColors.primaryButton.bg}15`
-                    }}
-                  >
-                    <Star className="w-4 h-4" />
-              Your Trusted {projectCategory} Partners
-                  </span>
-            </div>
+                {showSkeleton ? (
+                  <div className="inline-block mb-4 animate-pulse">
+                    <div className="h-8 w-48 bg-gray-300 rounded-full"></div>
+                  </div>
+                ) : (
+                  <div className="inline-block mb-4">
+                    <span
+                      className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
+                      style={{
+                        color: safeColors.heading,
+                        backgroundColor: `${safeColors.primaryButton.bg}15`
+                      }}
+                    >
+                      <Star className="w-4 h-4" />
+                Your Trusted {projectCategory} Partners
+                    </span>
+                  </div>
+                )}
 
                 {/* Main Heading */}
-                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
-                  <span style={{ color: safeColors.heading }}>
-                About
-                  </span>{' '}
-                  <span
-                    className="inline-block"
-                    style={{
-                      backgroundImage: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`,
-                      WebkitBackgroundClip: 'text',
+                {showSkeleton ? (
+                  <div className="space-y-3">
+                    <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-3/4 bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-1/2 bg-gray-300 rounded animate-pulse"></div>
+                  </div>
+                ) : (
+                  <h1 className="font-black">
+                    <span style={{ color: safeColors.heading }}>
+                  About
+                    </span>{' '}
+                    <span
+                      className="inline-block"
+                      style={{
+                        backgroundImage: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`,
+                        WebkitBackgroundClip: 'text',
                       backgroundClip: 'text',
                       color: 'transparent',
                       WebkitTextFillColor: 'transparent'
@@ -297,15 +307,23 @@ const About = () => {
                   >
                     {projectName}
                   </span>
-              </h1>
+                  </h1>
+                )}
 
                 {/* Subheading */}
-                <p
-                  className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
-                  style={{ color: safeColors.description }}
-                >
-              {aboutHeroText}
-            </p>
+                {showSkeleton ? (
+                  <div className="space-y-2 max-w-3xl mx-auto lg:mx-0">
+                    <div className="h-4 w-full bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-4 w-5/6 bg-gray-300 rounded animate-pulse"></div>
+                  </div>
+                ) : (
+                  <p
+                    className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
+                    style={{ color: safeColors.description }}
+                  >
+                    {aboutHeroText}
+                  </p>
+                )}
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
@@ -374,19 +392,15 @@ const About = () => {
         <div className="hidden lg:flex w-1/2 relative min-h-screen items-center justify-center p-8">
           <div className="relative w-full max-w-lg">
             {/* Main Image */}
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-              <img
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[500px]">
+              <Image
                 src={heroImage || '/placeholder.svg'}
                 alt="About Us"
-                className="w-full h-[500px] object-cover"
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-                width="600"
-                height="500"
-                onError={(e) => {
-                  e.currentTarget.src = '/placeholder.svg';
-                }}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 1024px) 0vw, 50vw"
+                quality={90}
               />
               
               {/* Gradient Overlay */}
@@ -1064,7 +1078,7 @@ const About = () => {
             
             {/* Section Header */}
             <div className="mb-8">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl mx-auto leading-tight">
+              <h2 className="font-bold text-white mb-4 max-w-2xl mx-auto">
               {getCTAContent(3).title}
             </h2>
               <p className="text-xs sm:text-sm text-white/90 max-w-2xl mx-auto leading-relaxed">

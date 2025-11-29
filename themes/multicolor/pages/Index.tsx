@@ -20,7 +20,6 @@ import { httpFile } from "@/config";
 import { useSEO } from '../../../hooks/useSEO';
 import DynamicIcon from '../../../extras/DynamicIcon';
 import { useTheme } from '../contexts/ThemeContext';
-import Loader from '../components/Loader';
 import { getProjectId } from '../../../hooks/getProjectId';
 
 // Lazy load heavy components
@@ -166,13 +165,12 @@ const Index = () => {
 
 
 
-  if (isLoading) {
-    return <Loader message="Loading Home Page..." variant="elegant" size="lg" />;
-  }
+  // Show skeleton loading state like header
+  const showSkeleton = isLoading;
 
   return (
     <HelmetProvider>
-      <div className="min-h-screen font-poppins">
+      <div className="min-h-screen">
         <Helmet>
           <title>{seoData.meta_title}</title>
           <meta name="description" content={seoData.meta_description} />
@@ -231,55 +229,82 @@ const Index = () => {
               <div className="text-center lg:text-left space-y-6 relative z-20">
                 
                 {/* Badge */}
-                <div 
-                  className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
-                  style={{
-                    backgroundColor: `${colors.primaryButton.bg}20`,
-                    border: `1px solid ${colors.primaryButton.bg}40`
-                  }}
-                >
+                {showSkeleton ? (
+                  <div className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5 animate-pulse">
+                    <div className="w-2 h-2 rounded-full bg-gray-300"></div>
+                    <div className="h-4 w-24 bg-gray-300 rounded"></div>
+                  </div>
+                ) : (
                   <div 
-                    className="w-2 h-2 rounded-full animate-pulse"
-                    style={{ backgroundColor: colors.primaryButton.bg }}
-                  ></div>
-                  <span 
-                    className="font-semibold text-sm tracking-wide"
-                    style={{ color: colors.heading }}
-                  >
-                    {projectSlogan}
-                  </span>
-                </div>
-
-                {/* Main Heading */}
-                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
-                  <span style={{ color: colors.heading }}>
-                    {heroHeadingPart1}
-                  </span>{' '}
-                  <span 
-                    className="inline-block"
+                    className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
                     style={{
-                      backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      color: 'transparent',
-                      WebkitTextFillColor: 'transparent'
+                      backgroundColor: `${colors.primaryButton.bg}20`,
+                      border: `1px solid ${colors.primaryButton.bg}40`
                     }}
                   >
-                    {heroHeadingPart2}
-                  </span>
-                </h1>
+                    <div 
+                      className="w-2 h-2 rounded-full animate-pulse"
+                      style={{ backgroundColor: colors.primaryButton.bg }}
+                    ></div>
+                    <span 
+                      className="font-semibold tracking-wide"
+                      style={{ color: colors.heading }}
+                    >
+                      {projectSlogan}
+                    </span>
+                  </div>
+                )}
+
+                {/* Main Heading */}
+                {showSkeleton ? (
+                  <div className="space-y-3">
+                    <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-full max-w-2xl bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-3/4 max-w-xl bg-gray-300 rounded animate-pulse"></div>
+                  </div>
+                ) : (
+                  <h1 className="font-black">
+                    <span style={{ color: colors.heading }}>
+                      {heroHeadingPart1}
+                    </span>{' '}
+                    <span 
+                      className="inline-block"
+                      style={{
+                        backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        color: 'transparent',
+                        WebkitTextFillColor: 'transparent'
+                      }}
+                    >
+                      {heroHeadingPart2}
+                    </span>
+                  </h1>
+                )}
 
                 {/* Subheading */}
-                <p 
-                  className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
-                  style={{ color: colors.description }}
-                >
-                  {welcomeLine}
-                </p>
+                {showSkeleton ? (
+                  <div className="space-y-2 max-w-3xl mx-auto lg:mx-0">
+                    <div className="h-4 w-full bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-4 w-5/6 bg-gray-300 rounded animate-pulse"></div>
+                  </div>
+                ) : (
+                  <p 
+                    className="max-w-3xl mx-auto lg:mx-0"
+                    style={{ color: colors.description }}
+                  >
+                    {welcomeLine}
+                  </p>
+                )}
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
-                  
+                  {showSkeleton ? (
+                    <>
+                      <div className="h-12 w-32 bg-gray-300 rounded-xl animate-pulse"></div>
+                      <div className="h-12 w-36 bg-gray-300 rounded-xl animate-pulse"></div>
+                    </>
+                  ) : (
+                    <>
                   {/* Call Button */}
                   <a
                     href={`tel:${phoneNumber}`}
@@ -293,8 +318,8 @@ const Index = () => {
                   >
                     <Phone className="w-5 h-5" />
                     <div className="text-left">
-                      <div className="text-xs opacity-90">Call Now</div>
-                      <div className="text-sm font-bold">{phoneNumber}</div>
+                      <div className="opacity-90">Call Now</div>
+                      <div className="font-bold">{phoneNumber}</div>
                     </div>
                   </a>
 
@@ -313,6 +338,8 @@ const Index = () => {
                     <Wrench className="w-5 h-5" />
                     <span>Get Free Estimate</span>
                   </button>
+                    </>
+                  )}
                 </div>
 
                 {/* Trust Indicators */}
@@ -325,21 +352,21 @@ const Index = () => {
                       className="w-5 h-5" 
                       style={{ color: colors.accent }}
                     />
-                    <span className="text-sm font-medium">Licensed & Insured</span>
+                    <span className="font-medium">Licensed & Insured</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Star 
                       className="w-5 h-5 fill-current" 
                       style={{ color: colors.accent }}
                     />
-                    <span className="text-sm font-medium">5-Star Rated</span>
+                    <span className="font-medium">5-Star Rated</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock 
                       className="w-5 h-5" 
                       style={{ color: colors.accent }}
                     />
-                    <span className="text-sm font-medium">24/7 Available</span>
+                    <span className="font-medium">24/7 Available</span>
                   </div>
                 </div>
 
@@ -402,12 +429,13 @@ const Index = () => {
                       {/* Text Content */}
                       <div className="space-y-3">
                         <h3 
-                          className="text-xl font-bold leading-tight text-gray-900"
+                          className="font-bold"
+                          style={{ color: colors.heading }}
                         >
                           {f.title}
                         </h3>
                         <p 
-                          className="text-base leading-relaxed text-gray-600"
+                          style={{ color: colors.description }}
                         >
                           {f.subtitle}
                         </p>
@@ -449,10 +477,10 @@ const Index = () => {
             
             {/* Section Header */}
             <div className="mb-8">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl mx-auto leading-tight">
+              <h2 className="font-bold text-white mb-4 max-w-2xl mx-auto">
                 {getCTAContent(1).title}
               </h2>
-              <p className="text-xs sm:text-sm text-white/90 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-white/90 max-w-2xl mx-auto">
                 {getCTAContent(1).description}
               </p>
             </div>
@@ -476,8 +504,8 @@ const Index = () => {
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 </div>
                 <div className="text-left">
-                  <div className="text-xs font-semibold opacity-90 uppercase tracking-wide">Emergency Call</div>
-                  <div className="text-sm font-bold">{phoneNumber}</div>
+                  <div className="font-semibold opacity-90 uppercase tracking-wide">Emergency Call</div>
+                  <div className="font-bold">{phoneNumber}</div>
                 </div>
               </a>
 
@@ -501,8 +529,8 @@ const Index = () => {
               >
                 <Calendar className="w-5 h-5" />
                 <div className="text-left">
-                  <div className="text-xs font-semibold opacity-90 uppercase tracking-wide">Book Online</div>
-                  <div className="text-sm font-bold">Schedule Service</div>
+                  <div className="font-semibold opacity-90 uppercase tracking-wide">Book Online</div>
+                  <div className="font-bold">Schedule Service</div>
                 </div>
               </Link>
             </div>
@@ -514,21 +542,21 @@ const Index = () => {
                   className="w-2 h-2 rounded-full animate-pulse"
                   style={{ backgroundColor: colors.accent }}
                 ></div>
-                <span className="text-xs font-semibold">24/7 Available</span>
+                <span className="font-semibold">24/7 Available</span>
               </div>
               <div className="flex items-center gap-2">
                 <div 
                   className="w-2 h-2 rounded-full animate-pulse"
                   style={{ backgroundColor: colors.primaryButton.bg }}
                 ></div>
-                <span className="text-xs font-semibold">Licensed & Insured</span>
+                <span className="font-semibold">Licensed & Insured</span>
               </div>
               <div className="flex items-center gap-2">
                 <div 
                   className="w-2 h-2 rounded-full animate-pulse"
                   style={{ backgroundColor: colors.accent }}
                 ></div>
-                <span className="text-xs font-semibold">Same Day Service</span>
+                <span className="font-semibold">Same Day Service</span>
               </div>
             </div>
           </div>
@@ -557,10 +585,10 @@ const Index = () => {
             
             {/* Section Header */}
             <div className="mb-8">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl mx-auto leading-tight">
+              <h2 className="font-bold text-white mb-4 max-w-2xl mx-auto">
                 {getCTAContent(2).title}
               </h2>
-              <p className="text-xs sm:text-sm text-white/90 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-white/90 max-w-2xl mx-auto">
                 {getCTAContent(2).description}
               </p>
             </div>
@@ -584,8 +612,8 @@ const Index = () => {
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 </div>
                 <div className="text-left">
-                  <div className="text-xs font-semibold opacity-90 uppercase tracking-wide">Emergency Call</div>
-                  <div className="text-sm font-bold">{phoneNumber}</div>
+                  <div className="font-semibold opacity-90 uppercase tracking-wide">Emergency Call</div>
+                  <div className="font-bold">{phoneNumber}</div>
                 </div>
               </a>
 
@@ -609,8 +637,8 @@ const Index = () => {
               >
                 <Calendar className="w-5 h-5" />
                 <div className="text-left">
-                  <div className="text-xs font-semibold opacity-90 uppercase tracking-wide">Book Online</div>
-                  <div className="text-sm font-bold">Schedule Service</div>
+                  <div className="font-semibold opacity-90 uppercase tracking-wide">Book Online</div>
+                  <div className="font-bold">Schedule Service</div>
                 </div>
               </Link>
             </div>
@@ -622,21 +650,21 @@ const Index = () => {
                   className="w-2 h-2 rounded-full animate-pulse"
                   style={{ backgroundColor: colors.accent }}
                 ></div>
-                <span className="text-xs font-semibold">24/7 Available</span>
+                <span className="font-semibold">24/7 Available</span>
               </div>
               <div className="flex items-center gap-2">
                 <div 
                   className="w-2 h-2 rounded-full animate-pulse"
                   style={{ backgroundColor: colors.primaryButton.bg }}
                 ></div>
-                <span className="text-xs font-semibold">Licensed & Insured</span>
+                <span className="font-semibold">Licensed & Insured</span>
               </div>
               <div className="flex items-center gap-2">
                 <div 
                   className="w-2 h-2 rounded-full animate-pulse"
                   style={{ backgroundColor: colors.accent }}
                 ></div>
-                <span className="text-xs font-semibold">Same Day Service</span>
+                <span className="font-semibold">Same Day Service</span>
               </div>
             </div>
           </div>
@@ -670,10 +698,10 @@ const Index = () => {
             
             {/* Section Header */}
             <div className="mb-8">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl mx-auto leading-tight">
+              <h2 className="font-bold text-white mb-4 max-w-2xl mx-auto">
                 {getCTAContent(3).title}
               </h2>
-              <p className="text-xs sm:text-sm text-white/90 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-white/90 max-w-2xl mx-auto">
                 {getCTAContent(3).description}
               </p>
             </div>
@@ -697,8 +725,8 @@ const Index = () => {
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 </div>
                 <div className="text-left">
-                  <div className="text-xs font-semibold opacity-90 uppercase tracking-wide">Emergency Call</div>
-                  <div className="text-sm font-bold">{phoneNumber}</div>
+                  <div className="font-semibold opacity-90 uppercase tracking-wide">Emergency Call</div>
+                  <div className="font-bold">{phoneNumber}</div>
                 </div>
               </a>
 
@@ -722,8 +750,8 @@ const Index = () => {
               >
                 <Calendar className="w-5 h-5" />
                 <div className="text-left">
-                  <div className="text-xs font-semibold opacity-90 uppercase tracking-wide">Book Online</div>
-                  <div className="text-sm font-bold">Schedule Service</div>
+                  <div className="font-semibold opacity-90 uppercase tracking-wide">Book Online</div>
+                  <div className="font-bold">Schedule Service</div>
                 </div>
               </Link>
             </div>
@@ -735,21 +763,21 @@ const Index = () => {
                   className="w-2 h-2 rounded-full animate-pulse"
                   style={{ backgroundColor: colors.accent }}
                 ></div>
-                <span className="text-xs font-semibold">24/7 Available</span>
+                <span className="font-semibold">24/7 Available</span>
               </div>
               <div className="flex items-center gap-2">
                 <div 
                   className="w-2 h-2 rounded-full animate-pulse"
                   style={{ backgroundColor: colors.primaryButton.bg }}
                 ></div>
-                <span className="text-xs font-semibold">Licensed & Insured</span>
+                <span className="font-semibold">Licensed & Insured</span>
               </div>
               <div className="flex items-center gap-2">
                 <div 
                   className="w-2 h-2 rounded-full animate-pulse"
                   style={{ backgroundColor: colors.accent }}
                 ></div>
-                <span className="text-xs font-semibold">Same Day Service</span>
+                <span className="font-semibold">Same Day Service</span>
               </div>
             </div>
           </div>

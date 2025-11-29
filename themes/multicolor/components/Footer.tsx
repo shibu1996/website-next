@@ -48,7 +48,7 @@ const Footer = () => {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 py-16">
-          <div className="text-center text-white/80">Loading...</div>
+          {/* Loading state removed for better UX */}
         </div>
       </footer>
     );
@@ -136,7 +136,7 @@ const Footer = () => {
 
           {/* Our Services */}
           <div>
-            <h4 className="text-lg font-bold mb-6 text-white">Our Services</h4>
+            <h4 className="font-bold mb-6 text-white">Our Services</h4>
             <ul className="space-y-3">
               {services.slice(0, 6).map((service, index) => (
                 <li key={index}>
@@ -157,7 +157,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-bold mb-6 text-white">Quick Links</h4>
+            <h4 className="font-bold mb-6 text-white">Quick Links</h4>
             <ul className="space-y-3">
               <li>
                 <Link 
@@ -224,7 +224,7 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-bold mb-6 text-white">Contact Info</h4>
+            <h4 className="font-bold mb-6 text-white">Contact Info</h4>
             <div className="space-y-4">
               {aboutUs.phone && (
                 <div className="flex items-start gap-3">

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -28,7 +29,6 @@ import PageSchemaMarkup from '../components/PageSchemaMarkup';
 import ProcessSchemaMarkup from '../components/ProcessSchemaMarkup';
 import SEOHead from '../components/SEOHead';
 import { httpFile } from "@/config";
-import Loader from '../components/Loader';
 
 const Services = () => {
   const { getThemeColors } = useTheme();
@@ -171,9 +171,8 @@ const Services = () => {
 
   console.log(formattedLocationName, "formattedLocationName in services page");
 
-  if (isLoading) {
-    return <Loader message="Loading Services..." />;
-  }
+  // Show skeleton loading state like header
+  const showSkeleton = isLoading;
 
   return (
     <div className="min-h-screen font-poppins">
@@ -227,52 +226,78 @@ const Services = () => {
               <div className="text-center lg:text-left space-y-6 relative z-20">
 
                 {/* Badge */}
-                <div className="inline-block mb-4">
-                  <span
-                    className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
-                    style={{
-                      color: colors.heading,
-                      backgroundColor: `${colors.primaryButton.bg}15`
-                    }}
-                  >
-                    <Star className="w-4 h-4" />
-                    Professional Services Available
-                  </span>
-                </div>
+                {showSkeleton ? (
+                  <div className="inline-block mb-4 animate-pulse">
+                    <div className="h-8 w-48 bg-gray-300 rounded-full"></div>
+                  </div>
+                ) : (
+                  <div className="inline-block mb-4">
+                    <span
+                      className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
+                      style={{
+                        color: colors.heading,
+                        backgroundColor: `${colors.primaryButton.bg}15`
+                      }}
+                    >
+                      <Star className="w-4 h-4" />
+                      Professional Services Available
+                    </span>
+                  </div>
+                )}
 
                 {/* Main Heading */}
-                <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-black leading-[1.1] tracking-tight">
-                  <span style={{ color: colors.heading }}>
-                    Professional
-                  </span>{' '}
-                  <span
-                    className="inline-block"
-                    style={{
-                      backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      color: 'transparent',
-                      WebkitTextFillColor: 'transparent'
-                    }}
-                  >
-                    {projectCategory}
-                  </span>{' '}
-                  <span style={{ color: colors.heading }}>
-                    Services {formattedLocationName}
-                  </span>
-                </h1>
+                {showSkeleton ? (
+                  <div className="space-y-3">
+                    <div className="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 w-full bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 w-3/4 bg-gray-300 rounded animate-pulse"></div>
+                  </div>
+                ) : (
+                  <h1 className="font-black">
+                    <span style={{ color: colors.heading }}>
+                      Professional
+                    </span>{' '}
+                    <span
+                      className="inline-block"
+                      style={{
+                        backgroundImage: `linear-gradient(135deg, ${colors.primaryButton.bg}, ${colors.accent})`,
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        color: 'transparent',
+                        WebkitTextFillColor: 'transparent'
+                      }}
+                    >
+                      {projectCategory}
+                    </span>{' '}
+                    <span style={{ color: colors.heading }}>
+                      Services {formattedLocationName}
+                    </span>
+                  </h1>
+                )}
 
                 {/* Subheading */}
-                <p
-                  className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
-                  style={{ color: colors.description }}
-                >
-                  {projectDescriptions[2] || "Professional services tailored to meet your needs with quality and reliability."}
-                </p>
+                {showSkeleton ? (
+                  <div className="space-y-2 max-w-3xl mx-auto lg:mx-0">
+                    <div className="h-4 w-full bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-4 w-5/6 bg-gray-300 rounded animate-pulse"></div>
+                  </div>
+                ) : (
+                  <p
+                    className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
+                    style={{ color: colors.description }}
+                  >
+                    {projectDescriptions[2] || "Professional services tailored to meet your needs with quality and reliability."}
+                  </p>
+                )}
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
-
+                  {showSkeleton ? (
+                    <>
+                      <div className="h-12 w-32 bg-gray-300 rounded-xl animate-pulse"></div>
+                      <div className="h-12 w-36 bg-gray-300 rounded-xl animate-pulse"></div>
+                    </>
+                  ) : (
+                    <>
                   {/* Call Button */}
                   <a
                     href={`tel:${phoneNumber}`}
@@ -306,6 +331,8 @@ const Services = () => {
                     <Wrench className="w-5 h-5" />
                     <span>Get Free Estimate</span>
                   </button>
+                    </>
+                  )}
                 </div>
 
                 {/* Trust Indicators */}
@@ -332,14 +359,14 @@ const Services = () => {
         <div className="hidden lg:flex w-1/2 relative min-h-screen items-center justify-center p-8">
           <div className="relative w-full max-w-lg">
             {/* Main Image */}
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-              <img
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[500px]">
+              <Image
                 src={backgroundImage || '/placeholder.svg'}
                 alt="Professional Services"
-                className="w-full h-[500px] object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = '/placeholder.svg';
-                }}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 0vw, 50vw"
+                quality={90}
               />
 
               {/* Gradient Overlay */}
@@ -418,7 +445,7 @@ const Services = () => {
 
           {/* Section Header */}
           <div className="mb-8">
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl mx-auto leading-tight">
+            <h2 className="font-bold text-white mb-4 max-w-2xl mx-auto">
               {getCTAContent(4).title}
             </h2>
             <p className="text-xs sm:text-sm text-white/90 max-w-2xl mx-auto leading-relaxed">

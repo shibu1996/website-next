@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useParams } from 'next/navigation';
@@ -40,7 +41,6 @@ import { useSEO } from '../../../hooks/useSEO';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import Loader from '../components/Loader';
 
 interface Testimonial {
   review_text?: string;
@@ -463,10 +463,8 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
 }));
 
 
-  // Loading state
-  if (isLoading) {
-    return <Loader message="Loading Service Details..." />;
-  }
+  // Show skeleton loading state like header
+  const showSkeleton = isLoading;
 
   return (
     <HelmetProvider>
@@ -550,49 +548,75 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                 <div className="text-center lg:text-left space-y-6 relative z-20">
 
                   {/* Badge */}
-                  <div className="inline-block mb-4">
-                    <span
-                      className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
-                      style={{
-                        color: safeColors.heading,
-                        backgroundColor: `${safeColors.primaryButton.bg}15`
-                      }}
-                    >
-                      <Star className="w-4 h-4" />
-                      Professional {displayServiceName} Solutions
-                    </span>
-                  </div>
+                  {showSkeleton ? (
+                    <div className="inline-block mb-4 animate-pulse">
+                      <div className="h-8 w-48 bg-gray-300 rounded-full"></div>
+                    </div>
+                  ) : (
+                    <div className="inline-block mb-4">
+                      <span
+                        className="inline-flex items-center gap-2 backdrop-blur-sm rounded-full px-6 py-2.5"
+                        style={{
+                          color: safeColors.heading,
+                          backgroundColor: `${safeColors.primaryButton.bg}15`
+                        }}
+                      >
+                        <Star className="w-4 h-4" />
+                        Professional {displayServiceName} Solutions
+                      </span>
+                    </div>
+                  )}
 
                   {/* Main Heading */}
-                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[1.1] tracking-tight">
-                    <span style={{ color: safeColors.heading }}>
-                      {locationName}
-                    </span>{' '}
-                    <span
-                      className="inline-block"
-                      style={{
-                        backgroundImage: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`,
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        color: 'transparent',
-                        WebkitTextFillColor: 'transparent'
-                      }}
-                    >
-                      {displayServiceName}
-                    </span>
-                  </h1>
+                  {showSkeleton ? (
+                    <div className="space-y-3">
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-full bg-gray-300 rounded animate-pulse"></div>
+                      <div className="h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-3/4 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ) : (
+                    <h1 className="font-black">
+                      <span style={{ color: safeColors.heading }}>
+                        {locationName}
+                      </span>{' '}
+                      <span
+                        className="inline-block"
+                        style={{
+                          backgroundImage: `linear-gradient(135deg, ${safeColors.primaryButton.bg}, ${safeColors.accent})`,
+                          WebkitBackgroundClip: 'text',
+                          backgroundClip: 'text',
+                          color: 'transparent',
+                          WebkitTextFillColor: 'transparent'
+                        }}
+                      >
+                        {displayServiceName}
+                      </span>
+                    </h1>
+                  )}
 
                   {/* Subheading */}
-                  <p
-                    className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
-                    style={{ color: safeColors.description }}
-                  >
-                    {displayServiceDescription}
-                  </p>
+                  {showSkeleton ? (
+                    <div className="space-y-2 max-w-3xl mx-auto lg:mx-0">
+                      <div className="h-4 w-full bg-gray-300 rounded animate-pulse"></div>
+                      <div className="h-4 w-5/6 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                  ) : (
+                    <p
+                      className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed"
+                      style={{ color: safeColors.description }}
+                    >
+                      {displayServiceDescription}
+                    </p>
+                  )}
 
                   {/* CTA Buttons */}
                   <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-4">
-
+                    {showSkeleton ? (
+                      <>
+                        <div className="h-12 w-32 bg-gray-300 rounded-xl animate-pulse"></div>
+                        <div className="h-12 w-36 bg-gray-300 rounded-xl animate-pulse"></div>
+                      </>
+                    ) : (
+                      <>
                     {/* Call Button */}
                     <a
                       href={`tel:${phoneNumber}`}
@@ -626,6 +650,8 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                       <Wrench className="w-5 h-5" />
                       <span>Get Free Estimate</span>
                     </button>
+                      </>
+                    )}
                   </div>
 
                   {/* Trust Indicators */}
@@ -652,18 +678,15 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
           <div className="hidden lg:flex w-1/2 relative min-h-screen items-center justify-center p-8">
             <div className="relative w-full max-w-lg">
               {/* Main Image */}
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[500px]">
+                <Image
                   src={displayServiceImage || '/placeholder.svg'}
                   alt="Professional Services"
-                  className="w-full h-[500px] object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 0vw, 50vw"
+                  quality={90}
                   loading="lazy"
-                  decoding="async"
-                  width="600"
-                  height="500"
-                  onError={(e) => {
-                    e.currentTarget.src = '/placeholder.svg';
-                  }}
                 />
 
                 {/* Gradient Overlay */}
@@ -844,7 +867,7 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                   Service Coverage
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                 Comprehensive <span style={{ color: safeColors.primaryButton.bg }}>{displayServiceName}</span> Solutions
               </h2>
               <p
@@ -898,7 +921,7 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
 
                       {/* Text Content */}
                       <div className="space-y-3">
-                        <h3 className="text-xl font-bold leading-tight text-gray-900">
+                        <h3 className="font-bold text-gray-900">
                           {feature.title}
                         </h3>
                         <p className="text-base leading-relaxed text-gray-600">
@@ -1033,7 +1056,7 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
               </div>
 
               {/* Title & Subtitle - Dynamic */}
-              <h3 className="text-lg font-bold text-gray-900 mb-2">
+              <h3 className="font-bold text-gray-900 mb-2">
                 {groupTitle}
               </h3>
               <p className="text-sm text-gray-600">
@@ -1204,7 +1227,7 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                   Our Process
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                 Our Simple <span style={{ color: safeColors.primaryButton.bg }}>Process</span>
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
@@ -1255,7 +1278,7 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                         )}
 
                         {/* Content */}
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.title || ''}</h3>
+                        <h3 className="font-bold text-gray-900 mb-4">{step.title || ''}</h3>
                         <p className="text-gray-600 text-lg leading-relaxed">{step.description || ''}</p>
                       </div>
                     </div>
@@ -1325,7 +1348,7 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                   Why Choose Us
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                 Why Choose <span style={{ color: safeColors.primaryButton.bg }}>{displayServiceName}</span> by {projectName} {inlocationName}?
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
@@ -1416,7 +1439,7 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                   Our Guarantee
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                 Our <span style={{ color: safeColors.primaryButton.bg }}>{displayServiceName}</span> Guarantee {inlocationName}
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-3xl mx-auto leading-relaxed mt-6">
@@ -1673,7 +1696,7 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                   Customer Reviews
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                 What Our <span style={{ color: safeColors.primaryButton.bg }}>Customers</span> Say
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed mt-6">
@@ -1811,7 +1834,7 @@ const coloredSteps = stepProcess.map((step: ProcessStep, i: number) => ({
                   FAQ
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 max-w-3xl mx-auto leading-tight">
+              <h2 className="font-bold text-gray-900 max-w-3xl mx-auto">
                 Frequently Asked <span style={{ color: safeColors.primaryButton.bg }}>Questions</span>
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed mt-6">
